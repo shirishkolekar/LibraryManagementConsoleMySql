@@ -7,7 +7,7 @@ public class Book {
 	private String author;
 	private int review;
 	private int edition;
-	private int quantitiy;
+	private int quantity;
 	private String genre;
 
 	public int getBookId() 
@@ -60,14 +60,14 @@ public class Book {
 		this.edition = edition;
 	}
 	
-	public int getQuantitiy() 
+	public int getQuantity() 
 	{
-		return quantitiy;
+		return quantity;
 	}
 	
-	public void setQuantitiy(int quantitiy) 
+	public void setQuantity(int quantity) 
 	{
-		this.quantitiy = quantitiy;
+		this.quantity = quantity;
 	}
 	
 	public String getGenre() 
@@ -88,17 +88,18 @@ public class Book {
 		this.author = "";
 		this.review = 0;
 		this.edition = 0;
-		this.quantitiy = 0;
+		this.quantity = 0;
 		this.genre = "";
 	}
 
-	public Book(int bookId, String bookName, String author, int edition, int quantitiy, String genre) {
+	public Book(int bookId, String bookName, String author, int edition, int quantity, String genre) {
 		this.bookId = bookId;
 		this.bookName = bookName;
 		this.author = author;
 		this.review = 0;
 		this.edition = edition;
-		this.quantitiy = quantitiy;
+		this.quantity = quantity;
 		this.genre = genre;
 	}
 }
+//have to change genre to genreID

@@ -5,5 +5,5 @@ public interface ProjectConfig {
 
 		String username = "root";
 		String pwd = "#India123$";
-		String connUrl = "jdbc:mysql://localhost:3306/libraryManagementDb";
+		String connUrl = "jdbc:mysql://localhost:3306/libraryManagement";
 }
