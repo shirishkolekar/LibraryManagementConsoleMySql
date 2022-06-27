@@ -83,8 +83,8 @@ public class BookBorrow {
 		this.bookBorrowId=0;
 		this.userId = 0;
 		this.bookId = 0;
-		this.borrowDate = null;
-		this.returnDate = null;
+		this.borrowDate = LocalDate.now();
+		this.returnDate = LocalDate.now().plusWeeks(2);
 		this.borrowApproved=false;
 		this.returnApproved=false;
 		this.bookName = "";

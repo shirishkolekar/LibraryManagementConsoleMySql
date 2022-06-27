@@ -6,11 +6,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class BookBorrowDAOImpl implements BookBorrowDAO {
 	static UserDAO userDAO = new UserDAOImpl();
-	ArrayList<BookBorrow> booksBorrow = new ArrayList<BookBorrow>();
-
+	static ArrayList<BookBorrow> booksBorrow = new ArrayList<BookBorrow>();
+	static ArrayList<Subscription> subscriptions = new ArrayList<Subscription>();
 	static Connection con;
 
 	static PreparedStatement ps,ps1;
@@ -23,16 +24,17 @@ public class BookBorrowDAOImpl implements BookBorrowDAO {
 		BookBorrow bookborrow = new BookBorrow();
 		try {
 			if (userDAO.isUserSubscribed(u.getEmailId())) {
-				con = DbConnection.getCon();
-				ps = con.prepareStatement(
+					con = DbConnection.getCon();
+					ps = con.prepareStatement(
 						"insert into BookBorrow(userId,bookId,bookName,borrowDate,returnDate,borrowApproved)values(?,?,?,?,?,?)");
 
-				ps.setInt(1, bookborrow.getUserId());
-				ps.setLong(2, bookborrow.getBookId());
-				ps.setString(3, bookborrow.getBookName());
-				ps.setDate(4, Date.valueOf(bookborrow.getBorrowDate()));
-				ps.setDate(5, Date.valueOf(bookborrow.getReturnDate()));
-				ps.setBoolean(6, bookborrow.isBorrowApproved());
+					ps.setInt(1, bookborrow.getUserId());
+					ps.setLong(2, bookborrow.getBookId());
+					ps.setString(3, bookborrow.getBookName());
+					ps.setDate(4, Date.valueOf(bookborrow.getBorrowDate()));
+					ps.setDate(5, Date.valueOf(bookborrow.getReturnDate()));
+					ps.setBoolean(6, bookborrow.isBorrowApproved());
+					booksBorrow.add(bookborrow);
 			} else {
 				System.out.println("Please subscribe first to avail the services!");
 			}
@@ -46,7 +48,7 @@ public class BookBorrowDAOImpl implements BookBorrowDAO {
 			e.printStackTrace();
 		}
 
-		return true;
+		return status;
 	}
 
 	@Override
@@ -84,35 +86,66 @@ public class BookBorrowDAOImpl implements BookBorrowDAO {
 	public boolean returnBook(BookBorrow bb, int bookId) {
 		boolean returnStatus=false;
 		
+	//	con=DbConnection.getCon(); have to finish this method.
+		//ps=con.prepareStatement()
+		
 			return returnStatus;
 	
 		}
 
 	@Override
-	public boolean approveBookBorrow(BookBorrow bb, int bookId) {
+	public boolean approveBookBorrow(BookBorrow bb, int bookId, Scanner sc ) {
 		boolean BorrowApproval=false;
+		Subscription subscription=new Subscription();
 		try 
 		{
-			
 			con=DbConnection.getCon();
-			ps=con.prepareCall("Select bookId where borrowApproved=false");
+			ps=con.prepareStatement("select bookBorrowId where borrowApproved=false");
 			rs=ps.executeQuery();
 			
-	//	while(rs.next())
-				System.out.println(bb.setBookId(rs.getInt("bookId"))+" "+ bb.setBorrowApproved(rs.getBoolean//("Approved")));
-			ps1=con.prepareStatement("update BookBorrow set borrowApproved=true, borrowDate=localDate.now, returnDate=LocalDate.now.plusMonth(1) where bookId=?);"
-				ps.setInt(1, bookId);
+			if(rs.next())
+			{
+				bb.setBookBorrowId(rs.getInt("bookBorrowId"));
+				System.out.println(bb.getBookBorrowId());
+			}
+		
+			System.out.print("Do you want to approve (y/n) : ");
+			char input=sc.next().charAt(0);
+			
+			if(input=='Y' || input=='y')//for approval
+			{
+			 if(subscription.getValidity().isAfter(LocalDate.now()))//to check subscription validity to allow borrow.
+			 {
+				ps1=con.prepareStatement("update BookBorrow set borrowApproved=?, borrowDate=?, returnDate=? where 				bookId=?");
 				
-		ps.set
+					ps.setBoolean(1, true);//Need to check from Sir
+					ps.setDate(2, Date.valueOf(bb.getBorrowDate()));
+					ps.setDate(3, Date.valueOf(bb.getReturnDate()));
+					ps.setInt(4, bb.getBookBorrowId());
+					int count =ps.executeUpdate();
 				
+					if(count==1)
+					{
+						BorrowApproval=true;//Have to complete the method.
+					}
+			 }
+			 else//if subscription validity is over  
+			 {
+				 subscriptions.remove(subscription);
+				 System.out.println("Subscription expired..Please renew to avail the facility!");
+			 }
+			}
+			else//for rejection
+			{
+				booksBorrow.remove(bb);
+				System.out.print("Payment failed. Please try again!");
+			}
 		}
 		catch (Exception e) 
 		{
 			System.out.println(e);
 			e.printStackTrace();
 		}
-		
 			return BorrowApproval;
-	
 	}
 }
