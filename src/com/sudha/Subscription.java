@@ -5,7 +5,6 @@ import java.time.LocalDate;
 public class Subscription {
 
 	private int subscriptionId;
-	
 	private int userId;
 	private long amount;
 	private LocalDate dateOfSubscription;
@@ -68,4 +67,4 @@ public class Subscription {
 	}
 }
 
-}
+

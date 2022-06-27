@@ -9,5 +9,7 @@ public interface UserDAO {
 	ArrayList<User> displayAllUsers();
 	User getUserById(int userId);
 	boolean isUserExists(String email); 
+	boolean isUserSubscribed(String email);
 	LoggedInUser login(String rEmail,String rPasswd); 
+
 }

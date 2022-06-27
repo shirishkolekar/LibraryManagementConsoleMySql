@@ -5,6 +5,15 @@ import java.time.LocalDate;
 public class BookBorrow {
 	
 	private int bookBorrowId;
+	private int userId;
+	private int bookId;
+	private String bookName;
+	private LocalDate borrowDate;
+	private LocalDate returnDate;
+	private boolean borrowApproved;
+	private boolean returnApproved;
+	
+
 	public int getBookBorrowId() {
 		return bookBorrowId;
 	}
@@ -13,15 +22,6 @@ public class BookBorrow {
 		this.bookBorrowId = bookBorrowId;
 	}
 
-	private int userId;
-	private int bookId;
-	private String bookName;
-	
-	private LocalDate borrowDate;
-	private LocalDate returnDate;
-	private boolean borrowApproved;
-	private boolean returnApproved;
-	
 	public String getBookName() {
 		return bookName;
 	}

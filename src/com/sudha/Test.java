@@ -8,8 +8,8 @@ import java.util.Scanner;
 
 public class Test {
 
-	static BookDAO bookDAO = new BookDAOImpl();
-	static UserDAO userDAO = new UserDAOImpl();
+	public static BookDAO bookDAO = new BookDAOImpl();
+	public static UserDAO userDAO = new UserDAOImpl();
 	
 	static void showBooks() {
 		for (Book b : bookDAO.getAllBooks()) {
