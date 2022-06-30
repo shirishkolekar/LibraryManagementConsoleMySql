@@ -7,7 +7,7 @@ public class BookBorrow {
 	private int bookBorrowId;
 	private int userId;
 	private int bookId;
-	private String bookName;
+	//private String bookName;
 	private LocalDate borrowDate;
 	private LocalDate returnDate;
 	private boolean borrowApproved;
@@ -22,13 +22,13 @@ public class BookBorrow {
 		this.bookBorrowId = bookBorrowId;
 	}
 
-	public String getBookName() {
-		return bookName;
-	}
-
-	public void setBookName(String bookName) {
-		this.bookName = bookName;
-	}
+//	//public String getBookName() {
+//		return bookName;
+//	}
+//
+//	//public void setBookName(String bookName) {
+//		this.bookName = bookName;
+//	}
 
 	
 	public boolean isBorrowApproved() {
@@ -84,21 +84,21 @@ public class BookBorrow {
 		this.userId = 0;
 		this.bookId = 0;
 		this.borrowDate = LocalDate.now();
-		this.returnDate = LocalDate.now().plusWeeks(2);
+		this.returnDate = null;
 		this.borrowApproved=false;
 		this.returnApproved=false;
-		this.bookName = "";
+	//	this.bookName = "";
 	}
 
 	public BookBorrow(int bookBorrowId, int userId, int bookId, LocalDate borrowDate, LocalDate returnDate,boolean borrowApproved,
-			boolean returnApproved, String bookName) {
+			boolean returnApproved) {
 		this.userId = userId;
 		this.bookId = bookId;
 		this.borrowDate = borrowDate;
 		this.returnDate = returnDate;
 		this.borrowApproved=borrowApproved;
 		this.returnApproved=returnApproved;
-		this.bookName = bookName;
+//		this.bookName = bookName;
 		this.bookBorrowId=bookBorrowId;
 	}
 

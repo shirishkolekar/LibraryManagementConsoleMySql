@@ -181,7 +181,7 @@ public class UserDAOImpl implements UserDAO {
 		User u = new User();
 		try {
 			con = DbConnection.getCon();
-			ps = con.prepareStatement("select * from users where emailId=? and userPassword=?");
+			ps = con.prepareStatement("select * from users where emailId=?");
 			ps.setString(1, rEmail);
 			ps.setString(2, rPasswd);
 			rs = ps.executeQuery();
@@ -196,45 +196,22 @@ public class UserDAOImpl implements UserDAO {
 				u.setRoleId(rs.getInt("roleId"));
 				u.setUserStatus(rs.getString("userStatus"));
 				loggedInUser.setUser(u); //
+				if (rs.getString("userPassword").equals(rPasswd)) {
+					loggedInUser.setLoginStatus(LoginStatus.Success);	
+				} else {
+					loggedInUser.setLoginStatus(LoginStatus.PasswordIncorrect);
+				}
+			}
+			else
+			{
+				loggedInUser.setLoginStatus(LoginStatus.UserNotFound);	
 			}
 			con.close();
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
 		}
-
-		if (loggedInUser.getUser() != null) {
-			if (loggedInUser.getUser().getUserPassword().equals(rPasswd)) {
-				loggedInUser.setLoginStatus(LoginStatus.Success);
-			} else {
-				loggedInUser.setLoginStatus(LoginStatus.PasswordIncorrect);
-			}
-		} else {
-			loggedInUser.setLoginStatus(LoginStatus.UserNotFound);
-		}
-
 		return loggedInUser;
 	}
 
-	@Override
-	public boolean isUserSubscribed(String email)
-	{
-		boolean exists = false;
-		try 
-		{
-			con = DbConnection.getCon();
-			ps = con.prepareStatement("select emailId from Subscription where emailId=?");
-			ps.setString(1, email);
-			rs = ps.executeQuery();
-
-			if (rs.next()) {
-				exists = true;
-			}
-			con.close();
-		} catch (Exception e) {
-			System.out.println(e);
-			e.printStackTrace();
-		}
-		return exists;
-	}
-
+	

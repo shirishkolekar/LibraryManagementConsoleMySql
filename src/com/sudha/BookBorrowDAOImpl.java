@@ -10,6 +10,7 @@ import java.util.Scanner;
 
 public class BookBorrowDAOImpl implements BookBorrowDAO {
 	static UserDAO userDAO = new UserDAOImpl();
+	static SubscriptionDAO subscriptionDAO=new SubscriptionDAOImpl();
 	static ArrayList<BookBorrow> booksBorrow = new ArrayList<BookBorrow>();
 	static ArrayList<Subscription> subscriptions = new ArrayList<Subscription>();
 	static Connection con;
@@ -23,17 +24,16 @@ public class BookBorrowDAOImpl implements BookBorrowDAO {
 		boolean status = false;
 		BookBorrow bookborrow = new BookBorrow();
 		try {
-			if (userDAO.isUserSubscribed(u.getEmailId())) {
+			if (subscriptionDAO.isUserSubscribed(u.getUserId())) {
 					con = DbConnection.getCon();
 					ps = con.prepareStatement(
-						"insert into BookBorrow(userId,bookId,bookName,borrowDate,returnDate,borrowApproved)values(?,?,?,?,?,?)");
+						"insert into BookBorrow(userId,bookId,borrowDate,returnDate,borrowApproved)values(?,?,?,?,?)");
 
 					ps.setInt(1, bookborrow.getUserId());
 					ps.setLong(2, bookborrow.getBookId());
-					ps.setString(3, bookborrow.getBookName());
-					ps.setDate(4, Date.valueOf(bookborrow.getBorrowDate()));
-					ps.setDate(5, Date.valueOf(bookborrow.getReturnDate()));
-					ps.setBoolean(6, bookborrow.isBorrowApproved());
+					ps.setDate(3, Date.valueOf(bookborrow.getBorrowDate()));
+					ps.setDate(4, Date.valueOf(bookborrow.getReturnDate()));
+					ps.setBoolean(5, bookborrow.isBorrowApproved());
 					booksBorrow.add(bookborrow);
 			} else {
 				System.out.println("Please subscribe first to avail the services!");
@@ -52,8 +52,9 @@ public class BookBorrowDAOImpl implements BookBorrowDAO {
 	}
 
 	@Override
-	public ArrayList<BookBorrow> ShowListOfBooksBorrowed(BookBorrow bb) {
-
+	public ArrayList<BookBorrow> ShowListOfBooksBorrowed() {
+		
+		BookBorrow bb=null;
 		ArrayList<BookBorrow> borrowedBooks= new ArrayList<BookBorrow>();
 		try
 		{
@@ -61,12 +62,12 @@ public class BookBorrowDAOImpl implements BookBorrowDAO {
 			ps=con.prepareStatement("select* from BookBorrow");
 			rs=ps.executeQuery();
 			
-			if(rs.next())
+			while(rs.next())
 			{
+				bb=new BookBorrow();// by calling constructor we allot memory to object on heap memory
 				bb.setBookBorrowId(rs.getInt("bookborrowId"));
 				bb.setUserId(rs.getInt("userId"));
 				bb.setBookId(rs.getInt("bookId"));
-				bb.setBookName(rs.getString("bookName"));
 				bb.setBorrowDate(rs.getDate("borrowDate").toLocalDate());
 				bb.setReturnDate(rs.getDate("returnDate").toLocalDate());
 				bb.setBorrowApproved(rs.getBoolean("borrowApproved"));
@@ -92,53 +93,26 @@ public class BookBorrowDAOImpl implements BookBorrowDAO {
 			return returnStatus;
 	
 		}
-
-	@Override
-	public boolean approveBookBorrow(BookBorrow bb, int bookId, Scanner sc ) {
-		boolean BorrowApproval=false;
-		Subscription subscription=new Subscription();
+/*Create method to retreive select bookBorrowId where borrowApproved=false as ArrayList.
+ * Create method in operations which would call above method.
+ * 
+	*/@Override
+	public ArrayList<BorrowedBookDetail> ShowListOfBooksBorrowDetails() {
+		ArrayList<BorrowedBookDetail> booksToBeApproved= new ArrayList<BorrowedBookDetail>();
+		BorrowedBookDetail bb=null;
 		try 
 		{
 			con=DbConnection.getCon();
-			ps=con.prepareStatement("select bookBorrowId where borrowApproved=false");
+			ps=con.prepareStatement("select bookborrow.bookborrowId, bookborrow.bookId, book.bookName from bookborrow Inner Join book On BookBorrow.bookId = Book.bookId");
 			rs=ps.executeQuery();
 			
-			if(rs.next())
+			while(rs.next())
 			{
+				bb=new BorrowedBookDetail();
 				bb.setBookBorrowId(rs.getInt("bookBorrowId"));
-				System.out.println(bb.getBookBorrowId());
-			}
-		
-			System.out.print("Do you want to approve (y/n) : ");
-			char input=sc.next().charAt(0);
-			
-			if(input=='Y' || input=='y')//for approval
-			{
-			 if(subscription.getValidity().isAfter(LocalDate.now()))//to check subscription validity to allow borrow.
-			 {
-				ps1=con.prepareStatement("update BookBorrow set borrowApproved=?, borrowDate=?, returnDate=? where 				bookId=?");
-				
-					ps.setBoolean(1, true);//Need to check from Sir
-					ps.setDate(2, Date.valueOf(bb.getBorrowDate()));
-					ps.setDate(3, Date.valueOf(bb.getReturnDate()));
-					ps.setInt(4, bb.getBookBorrowId());
-					int count =ps.executeUpdate();
-				
-					if(count==1)
-					{
-						BorrowApproval=true;//Have to complete the method.
-					}
-			 }
-			 else//if subscription validity is over  
-			 {
-				 subscriptions.remove(subscription);
-				 System.out.println("Subscription expired..Please renew to avail the facility!");
-			 }
-			}
-			else//for rejection
-			{
-				booksBorrow.remove(bb);
-				System.out.print("Payment failed. Please try again!");
+				bb.setBookName(rs.getString("BookName"));// How to call list of books here
+				bb.setUserId(rs.getInt("userId"));
+				booksToBeApproved.add(bb);
 			}
 		}
 		catch (Exception e) 
@@ -146,6 +120,53 @@ public class BookBorrowDAOImpl implements BookBorrowDAO {
 			System.out.println(e);
 			e.printStackTrace();
 		}
-			return BorrowApproval;
+		return booksToBeApproved;
+	}
+		
+//			System.out.print("Do you want to approve (y/n) : ");
+//			char input=sc.next().charAt(0);
+//			
+//			if(input=='Y' || input=='y')//for approval
+	public boolean approveBookBorrow(BookBorrow bb, int bookId,int userId, Scanner Sc) {
+		boolean approvalStatus= false;
+		try
+		{
+			Subscription subscription=subscriptionDAO.ShowSubscriptionByUserId(userId);
+		//to check subscription validity to allow borrow.
+		if(subscription.getValidity().isAfter(LocalDate.now()))
+			 {
+				ps1=con.prepareStatement("update BookBorrow set borrowApproved=? where bookId=?");
+				
+					ps.setBoolean(1, true);
+					ps.setInt(2, bookId);
+					int count =ps.executeUpdate();
+				
+					if(count==1)
+					{
+						approvalStatus=true;//Have to complete the method.
+					}
+			 }
+			 else//if subscription validity is over  
+			 {
+			subscriptionDAO.deleteSubscription(subscription.getSubscriptionId());
+				 System.out.println("Subscription expired..Please renew to avail the facility!");
+			 }
+			
+		
+//			 	else//for rejection
+//			{
+//				booksBorrow.remove(bb);
+//				System.out.print("Payment failed. Please try again!");
+//			}
+		}
+		catch (Exception e) 
+		{
+			System.out.println(e);
+			e.printStackTrace();
+		}
+			return approvalStatus;
 	}
 }
+
+	
+

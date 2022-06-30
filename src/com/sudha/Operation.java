@@ -14,7 +14,7 @@ public class Operation {
 	UserDAO userDAO = new UserDAOImpl();
 
 	ArrayList<User> users = new ArrayList<User>();
-
+	BookBorrowDAO bookBorrowDAO=new BookBorrowDAOImpl();
 	static Connection con;
 
 	static PreparedStatement ps;
@@ -84,4 +84,55 @@ public class Operation {
 		}
 		return status;
 	}
+	
+	public boolean approveBookBorrow(BookBorrow bb, int bookId,int userId, Scanner Sc) {
+		ArrayList<BorrowedBookDetail> borrowedBookDetailList =bookBorrowDAO.ShowListOfBooksBorrowDetails();
+		//Bookborrow requests pending for approval.
+		for(BorrowedBookDetail bbd:borrowedBookDetailList)
+		{
+			//showAllProperties for each object.
+		}
+		//select bookborrow id to approve
+		//bookborrow idInputread
+//		bookBorrowDAO.approveBookBorrow(bookBorrowId);
+		
+		boolean approvalStatus= false;
+		try
+		{
+			Subscription subscription=subscriptionDAO.ShowSubscriptionByUserId(userId);
+		//to check subscription validity to allow borrow.
+		if(subscription.getValidity().isAfter(LocalDate.now()))
+			 {
+				ps1=con.prepareStatement("update BookBorrow set borrowApproved=? where bookId=?");
+				
+					ps.setBoolean(1, true);
+					ps.setInt(2, bookId);
+					int count =ps.executeUpdate();
+				
+					if(count==1)
+					{
+						approvalStatus=true;//Have to complete the method.
+					}
+			 }
+			 else//if subscription validity is over  
+			 {
+			subscriptionDAO.deleteSubscription(subscription.getSubscriptionId());
+				 System.out.println("Subscription expired..Please renew to avail the facility!");
+			 }
+			
+		
+//			 	else//for rejection
+//			{
+//				booksBorrow.remove(bb);
+//				System.out.print("Payment failed. Please try again!");
+//			}
+		}
+		catch (Exception e) 
+		{
+			System.out.println(e);
+			e.printStackTrace();
+		}
+			return approvalStatus;
+	}
+
 }

@@ -14,8 +14,8 @@ public class SubscriptionDAOImpl implements SubscriptionDAO {
 	static ResultSet rs;
 
 	@Override
-	public ArrayList<Subscription> ShowAllSubscriptions(Subscription subscription) {
-
+	public ArrayList<Subscription> ShowAllSubscriptions() {
+		Subscription subscription=null;
 		ArrayList<Subscription> subscriptions = new ArrayList<Subscription>();
 
 		try {
@@ -23,7 +23,8 @@ public class SubscriptionDAOImpl implements SubscriptionDAO {
 			ps = con.prepareStatement("select* from Subscription");
 			rs = ps.executeQuery();
 
-			if (rs.next()) {
+			while(rs.next()) {
+				subscription=new Subscription();
 				subscription.setSubscriptionId(rs.getInt("subscriptionId"));
 				subscription.setUserId(rs.getInt("userId"));
 				subscription.setAmount(rs.getLong("amount"));
@@ -43,7 +44,7 @@ public class SubscriptionDAOImpl implements SubscriptionDAO {
 	public boolean approveSubscription(Scanner sc) {
 		boolean status = false;
 
-		Subscription subscription =new Subscription();
+		Subscription subscription = new Subscription();
 		try {
 			con = DbConnection.getCon();
 			ps = con.prepareStatement("select subscriptionId where approved=false");
@@ -58,7 +59,7 @@ public class SubscriptionDAOImpl implements SubscriptionDAO {
 			char input = sc.next().charAt(0);
 
 			System.out.print("Enter the subscription Id you want to approve or reject:");
-			int subscriptionId=sc.nextInt();
+			int subscriptionId = sc.nextInt();
 			if (input == 'Y' || input == 'y')// to approve subscription
 			{
 				ps1 = con.prepareStatement("update Subscription set approved=false, where subscriptionId=?");
@@ -80,4 +81,56 @@ public class SubscriptionDAOImpl implements SubscriptionDAO {
 
 		return status;
 	}
+
+	@Override
+	public Subscription ShowSubscriptionByUserId(int userId) {
+		Subscription subscription = null;// In which case we call constructor?
+		try {
+			con = DbConnection.getCon();
+			ps = con.prepareStatement("select* from Subscription where userId =?");
+			ps.setInt(1, userId);
+			rs = ps.executeQuery();
+
+			if (rs.next()) {
+				subscription = new Subscription();
+				subscription.setSubscriptionId(rs.getInt("subscriptionId"));
+				subscription.setUserId(rs.getInt("userId"));
+				subscription.setAmount(rs.getLong("amount"));
+				subscription.setDateOfSubscription(rs.getDate("dateOfSubscription").toLocalDate());
+				subscription.setValidity(rs.getDate("validity").toLocalDate());
+				subscription.setApproved(rs.getBoolean("approved"));
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+			e.printStackTrace();
+		}
+		return subscription;
+	}
+
+	@Override
+	public boolean isUserSubscribed(int userId) {
+		boolean exists = false;
+		try {
+			con = DbConnection.getCon();
+			ps = con.prepareStatement("select 1 from Subscription where userId=?");
+			ps.setInt(1, userId);
+			rs = ps.executeQuery();
+
+			if (rs.next()) {
+				exists = true;
+			}
+			con.close();
+		} catch (Exception e) {
+			System.out.println(e);
+			e.printStackTrace();
+		}
+		return exists;
+	}
+
+	@Override
+	public boolean deleteSubscription(int subscriptionId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
