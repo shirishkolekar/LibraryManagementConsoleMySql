@@ -26,7 +26,7 @@ public class BookDAOImpl implements BookDAO {
 				b.setReview(rs.getInt("review"));
 				b.setEdition(rs.getInt("edition"));
 				b.setQuantity(rs.getInt("quantity"));
-				b.setGenre(rs.getString("genre"));
+				b.setGenreId(rs.getInt("genreId"));
 				books.add(b);
 			}
 			con.close();
@@ -43,14 +43,14 @@ public class BookDAOImpl implements BookDAO {
 		try {
 			con = DbConnection.getCon();
 			ps = con.prepareStatement(
-					"insert into table books(bookName,author,review,edition,quantitity,genre)+ values(?,?,?,?,?,?)");
+					"insert into books(bookName,author,review,edition,quantitity,genreId) values(?,?,?,?,?,?)");
 
 			ps.setString(1, book.getBookName());
 			ps.setString(2, book.getAuthor());
 			ps.setInt(3, book.getReview());
 			ps.setInt(4, book.getEdition());
 			ps.setInt(5, book.getQuantity());
-			ps.setString(6, book.getGenre());
+			ps.setInt(6, book.getGenreId());
 
 			int count = ps.executeUpdate();
 
@@ -71,15 +71,15 @@ public class BookDAOImpl implements BookDAO {
 		try {
 			con = DbConnection.getCon();
 			ps = con.prepareStatement(
-					"update book set bookName = ?,author=?,review=?,edition=?,quantity=?,genre=? where bookId = ?");
+					"update books set bookName = ?,author=?,review=?,edition=?,quantity=?,genreId=? where bookId = ?");
 			ps.setString(1, book.getBookName());
 			ps.setString(2, book.getAuthor());
 			ps.setInt(3, book.getReview());
 			ps.setInt(4, book.getEdition());
 			ps.setInt(5, book.getQuantity());
-			ps.setString(6, book.getGenre());
+			ps.setInt(6, book.getGenreId());
 			ps.setInt(7, book.getBookId());
-			
+
 			int count = ps.executeUpdate();
 
 			if (count == 1) {
@@ -98,11 +98,9 @@ public class BookDAOImpl implements BookDAO {
 		boolean status = false;
 		try {
 			con = DbConnection.getCon();
-			ps = con.prepareStatement("delete bookId from table books");
-
+			ps = con.prepareStatement("delete from books where bookId = ?");
 			ps.setInt(1, bookId);
 			int count = ps.executeUpdate();
-
 			if (count == 1) {
 				status = true;
 			}
@@ -120,7 +118,7 @@ public class BookDAOImpl implements BookDAO {
 		Book b = new Book();
 		try {
 			con = DbConnection.getCon();
-			ps = con.prepareStatement("select * from table where bookid=?");
+			ps = con.prepareStatement("select * from books where bookid=?");
 			ps.setInt(1, bookId);
 			rs = ps.executeQuery();
 
@@ -131,7 +129,7 @@ public class BookDAOImpl implements BookDAO {
 				b.setReview(rs.getInt("review"));
 				b.setEdition(rs.getInt("edition"));
 				b.setQuantity(rs.getInt("quantity"));
-				b.setGenre(rs.getString("genre"));
+				b.setGenreId(rs.getInt("genreId"));
 			}
 			con.close();
 		} catch (Exception e) {

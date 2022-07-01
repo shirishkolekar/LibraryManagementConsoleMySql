@@ -8,33 +8,58 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import com.sudha.Library.LoginStatus;
-
 public class Operation {
 	public static BookDAO bookDAO = new BookDAOImpl();
 	public static UserDAO userDAO = new UserDAOImpl();
+	public static SubscriptionDAO subscriptionDAO = new SubscriptionDAOImpl();
 
 	ArrayList<User> users = new ArrayList<User>();
-	BookBorrowDAO bookBorrowDAO=new BookBorrowDAOImpl();
+	BookBorrowDAO bookBorrowDAO = new BookBorrowDAOImpl();
 	static Connection con;
 
 	static PreparedStatement ps;
 	static PreparedStatement ps1;
 	static ResultSet rs;
-	
-	//Librarian functions
-	
+
+	public static LoggedInUser login() {
+		LoggedInUser loggedInUser = null;
+		System.out.print("Enter your UserName :");
+		String userName = Utilities.getInput();
+		System.out.print("Enter your password :");
+		String password = Utilities.getInput();
+		loggedInUser = userDAO.login(userName, password);
+		return loggedInUser;
+	}
+
+	public static void showAdminMenu() {
+		System.out.println("\n" + " 1 - Add Book\n" + "2 - Show Books\n" + "3 - Show Readers'Detail\n" + "4 - Search\n"
+				+ "5 - Approve subscription\n" + "6 - Edit Book\n" + "5 - Approve Borrow");
+	}
+
+	public static void showLibrarianMenu() {
+		System.out.println("\n" + " 1 - Add Book\n" + "2 - Show Books\n" + "3 - Show Readers'Detail\n" + "4 - Search\n"
+				+ "5 - Approve subscription\n" + "6 - Edit Book\n" + "5 - Approve Borrow");
+	}
+
+	public static void showReaderMenu() {
+		System.out.println("\n" + " 1 - Add Book\n" + "2 - Show Books\n" + "3 - Show Readers'Detail\n" + "4 - Search\n"
+				+ "5 - Approve subscription\n" + "6 - Edit Book\n" + "5 - Approve Borrow");
+	}
+
+	// Librarian functions
+
 	public static void showBooks() {
 		for (Book b : bookDAO.getAllBooks()) {
 			System.out.println(b.getBookId() + " " + b.getBookName() + " " + b.getAuthor() + " " + b.getReview() + " "
-					+ b.getEdition() + " " + b.getQuantity() + " " + b.getGenre());
+					+ b.getEdition() + " " + b.getQuantity() + " " + b.getGenreId());
 		}
 	}
 
 	public static void showAllUsers() {
 		for (User u : userDAO.displayAllUsers()) {
-			System.out.println(u.getUserId() + " " + u.getUserName() + " " + u.getAddress() + " " + u.getContactNo() + " "
-					+ u.getEmailId() + " " + u.getRegistrationDate() + " " + u.getRoleId()+" "+ u.getUserPassword() + " "+u.getUserStatus());
+			System.out.println(u.getUserId() + " " + u.getUserName() + " " + u.getAddress() + " " + u.getContactNo()
+					+ " " + u.getEmailId() + " " + u.getRegistrationDate() + " " + u.getRoleId() + " "
+					+ u.getUserPassword() + " " + u.getUserStatus());
 		}
 	}
 
@@ -49,7 +74,7 @@ public class Operation {
 		System.out.print("Quantity : ");
 		book.setQuantity(sc.nextInt());
 		System.out.print("Genre : ");
-		book.setGenre(Utilities.getInput());
+		book.setGenreId(sc.nextInt());
 
 		if (bookDAO.addBook(book)) {
 			System.out.println("Successfully Added");
@@ -70,7 +95,7 @@ public class Operation {
 		user.setAddress(Utilities.getInput());
 		System.out.print("Status : ");
 		user.setUserStatus(Utilities.getInput());
-		
+
 		if (userDAO.addUser(user)) {
 			System.out.println("Successfully Added");
 		} else {
@@ -78,58 +103,49 @@ public class Operation {
 		}
 	}
 
-	public static void deleteBook(Scanner sc)
-	{
+	public static void deleteBook(Scanner sc) {
 		System.out.print("Enter the book Id you want to delete : ");
-		int bookId=sc.nextInt();
-		
-		if(bookDAO.deleteBook(bookId))
-		{
+		int bookId = sc.nextInt();
+
+		if (bookDAO.deleteBook(bookId)) {
 			System.out.println("Successfully deleted!");
-		}
-		else
-		{
+		} else {
 			System.out.println("deletion failed!");
 		}
 	}
-	
-	public static void deactivateUser(Scanner sc)
-	{
+
+	public static void deactivateUser(Scanner sc) {
 		System.out.print("Enter the user Id you want to delete : ");
-		int readerId=sc.nextInt();
-		
-		if(userDAO.removeUser(readerId))
-		{
+		int readerId = sc.nextInt();
+
+		if (userDAO.removeUser(readerId)) {
 			System.out.println("Successfully deactivated!");
-		}
-		else
-		{
+		} else {
 			System.out.println("deactivation failed!");
 		}
 	}
-	public static void getBookById(Scanner sc)
-	{
+
+	public static void getBookById(Scanner sc) {
 		System.out.print("Enter the book Id you want to display : ");
-		int bookId=sc.nextInt();
-		Book b=bookDAO.getBookById(bookId);
+		int bookId = sc.nextInt();
+		Book b = bookDAO.getBookById(bookId);
 		System.out.println(b.getBookId() + " " + b.getBookName() + " " + b.getAuthor() + " " + b.getReview() + " "
-				+ b.getEdition() + " " + b.getQuantity() + " " + b.getGenre());
+				+ b.getEdition() + " " + b.getQuantity() + " " + b.getGenreId());
 	}
 
-	public static void getUserById(Scanner sc)
-	{
+	public static void getUserById(Scanner sc) {
 		System.out.print("Enter the User Id you want to display : ");
-		int userId=sc.nextInt();
-		User u=userDAO.getUserById( userId);
+		int userId = sc.nextInt();
+		User u = userDAO.getUserById(userId);
 		System.out.println(u.getUserId() + " " + u.getUserName() + " " + u.getAddress() + " " + u.getContactNo() + " "
-				+ u.getEmailId() + " " + u.getRegistrationDate() + " " + u.getRoleId()+" "+ u.getUserPassword() + " "+u.getUserStatus());
+				+ u.getEmailId() + " " + u.getRegistrationDate() + " " + u.getRoleId() + " " + u.getUserPassword() + " "
+				+ u.getUserStatus());
 	}
-	public static void editBook(Scanner sc)
-	{
+
+	public static void editBook(Scanner sc) {
 		Book book = new Book();
 		System.out.print("Enter the book Id you want to edit information of : ");
 		book.setBookId(sc.nextInt());
-		
 		System.out.print("Book Name : ");
 		book.setBookName(Utilities.getInput());
 		System.out.print("Author Name : ");
@@ -139,7 +155,7 @@ public class Operation {
 		System.out.print("Quantity : ");
 		book.setQuantity(sc.nextInt());
 		System.out.print("Genre : ");
-		book.setGenre(Utilities.getInput());
+		book.setGenreId(sc.nextInt());
 
 		if (bookDAO.editBook(book)) {
 			System.out.println("Successfully updated!");
@@ -147,12 +163,12 @@ public class Operation {
 			System.out.println("failed");
 		}
 	}
-	public static void editUser(Scanner sc)
-	{
+
+	public static void editUser(Scanner sc) {
 		User user = new User();
 		System.out.print("Enter the User Id you want to edit information of : ");
 		user.setUserId(sc.nextInt());
-		
+
 		System.out.print("User Name : ");
 		user.setUserName(Utilities.getInput());
 		System.out.print("Adress : ");
@@ -169,9 +185,7 @@ public class Operation {
 		}
 	}
 
-
-	public boolean signUp(Scanner sc)// sign up
-	{
+	public boolean signUp(Scanner sc) {
 		User user = new User();
 		boolean signUpStatus = false;
 		try {
@@ -233,55 +247,47 @@ public class Operation {
 		}
 		return status;
 	}
-	
-	public boolean approveBookBorrow(BookBorrow bb, int bookId,int userId, Scanner Sc) {
-		ArrayList<BorrowedBookDetail> borrowedBookDetailList =bookBorrowDAO.ShowListOfBooksBorrowDetails();
-		//Bookborrow requests pending for approval.
-		for(BorrowedBookDetail bbd:borrowedBookDetailList)
-		{
-			//showAllProperties for each object.
+
+	public boolean approveBookBorrow(BookBorrow bb, int bookId, int userId, Scanner Sc) {
+		ArrayList<BorrowedBookDetail> borrowedBookDetailList = bookBorrowDAO.ShowListOfBooksBorrowDetails();
+		// Bookborrow requests pending for approval.
+		for (BorrowedBookDetail bbd : borrowedBookDetailList) {
+			// showAllProperties for each object.
 		}
-		//select bookborrow id to approve
-		//bookborrow idInputread
+		// select bookborrow id to approve
+		// bookborrow idInputread
 //		bookBorrowDAO.approveBookBorrow(bookBorrowId);
-		
-		boolean approvalStatus= false;
-		try
-		{
-			Subscription subscription=subscriptionDAO.ShowSubscriptionByUserId(userId);
-		//to check subscription validity to allow borrow.
-		if(subscription.getValidity().isAfter(LocalDate.now()))
-			 {
-				ps1=con.prepareStatement("update BookBorrow set borrowApproved=? where bookId=?");
-				
-					ps.setBoolean(1, true);
-					ps.setInt(2, bookId);
-					int count =ps.executeUpdate();
-				
-					if(count==1)
-					{
-						approvalStatus=true;//Have to complete the method.
-					}
-			 }
-			 else//if subscription validity is over  
-			 {
-			subscriptionDAO.deleteSubscription(subscription.getSubscriptionId());
-				 System.out.println("Subscription expired..Please renew to avail the facility!");
-			 }
-			
-		
+
+		boolean approvalStatus = false;
+		try {
+			Subscription subscription = subscriptionDAO.ShowSubscriptionByUserId(userId);
+			// to check subscription validity to allow borrow.
+			if (subscription.getValidity().isAfter(LocalDate.now())) {
+				ps1 = con.prepareStatement("update BookBorrow set borrowApproved=? where bookId=?");
+
+				ps.setBoolean(1, true);
+				ps.setInt(2, bookId);
+				int count = ps.executeUpdate();
+
+				if (count == 1) {
+					approvalStatus = true;// Have to complete the method.
+				}
+			} else// if subscription validity is over
+			{
+				subscriptionDAO.deleteSubscription(subscription.getSubscriptionId());
+				System.out.println("Subscription expired..Please renew to avail the facility!");
+			}
+
 //			 	else//for rejection
 //			{
 //				booksBorrow.remove(bb);
 //				System.out.print("Payment failed. Please try again!");
 //			}
-		}
-		catch (Exception e) 
-		{
+		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
 		}
-			return approvalStatus;
+		return approvalStatus;
 	}
 
 }

@@ -195,7 +195,7 @@ public class UserDAOImpl implements UserDAO {
 				u.setRegistrationDate(rs.getDate("registrationDate").toLocalDate());
 				u.setRoleId(rs.getInt("roleId"));
 				u.setUserStatus(rs.getString("userStatus"));
-				loggedInUser.setUser(u); //
+				loggedInUser.setUser(u);
 				if (rs.getString("userPassword").equals(rPasswd)) {
 					loggedInUser.setLoginStatus(LoginStatus.Success);	
 				} else {
@@ -213,5 +213,6 @@ public class UserDAOImpl implements UserDAO {
 		}
 		return loggedInUser;
 	}
+}
 
 	
