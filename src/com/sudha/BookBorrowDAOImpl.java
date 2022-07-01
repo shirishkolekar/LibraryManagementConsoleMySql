@@ -110,7 +110,7 @@ public class BookBorrowDAOImpl implements BookBorrowDAO {
 			{
 				bb=new BorrowedBookDetail();
 				bb.setBookBorrowId(rs.getInt("bookBorrowId"));
-				bb.setBookName(rs.getString("BookName"));// How to call list of books here
+				bb.setBookName(rs.getString("BookName"));
 				bb.setUserId(rs.getInt("userId"));
 				booksToBeApproved.add(bb);
 			}
@@ -166,6 +166,8 @@ public class BookBorrowDAOImpl implements BookBorrowDAO {
 		}
 			return approvalStatus;
 	}
+
+
 }
 
 	

@@ -11,7 +11,8 @@ import java.util.Scanner;
 import com.sudha.Library.LoginStatus;
 
 public class Operation {
-	UserDAO userDAO = new UserDAOImpl();
+	public static BookDAO bookDAO = new BookDAOImpl();
+	public static UserDAO userDAO = new UserDAOImpl();
 
 	ArrayList<User> users = new ArrayList<User>();
 	BookBorrowDAO bookBorrowDAO=new BookBorrowDAOImpl();
@@ -20,6 +21,154 @@ public class Operation {
 	static PreparedStatement ps;
 	static PreparedStatement ps1;
 	static ResultSet rs;
+	
+	//Librarian functions
+	
+	public static void showBooks() {
+		for (Book b : bookDAO.getAllBooks()) {
+			System.out.println(b.getBookId() + " " + b.getBookName() + " " + b.getAuthor() + " " + b.getReview() + " "
+					+ b.getEdition() + " " + b.getQuantity() + " " + b.getGenre());
+		}
+	}
+
+	public static void showAllUsers() {
+		for (User u : userDAO.displayAllUsers()) {
+			System.out.println(u.getUserId() + " " + u.getUserName() + " " + u.getAddress() + " " + u.getContactNo() + " "
+					+ u.getEmailId() + " " + u.getRegistrationDate() + " " + u.getRoleId()+" "+ u.getUserPassword() + " "+u.getUserStatus());
+		}
+	}
+
+	public static void addBook(Scanner sc) {
+		Book book = new Book();
+		System.out.print("Book Name : ");
+		book.setBookName(Utilities.getInput());
+		System.out.print("Author Name : ");
+		book.setAuthor(Utilities.getInput());
+		System.out.print("Edition : ");
+		book.setEdition(sc.nextInt());
+		System.out.print("Quantity : ");
+		book.setQuantity(sc.nextInt());
+		System.out.print("Genre : ");
+		book.setGenre(Utilities.getInput());
+
+		if (bookDAO.addBook(book)) {
+			System.out.println("Successfully Added");
+		} else {
+			System.out.println("failed");
+		}
+	}
+
+	public static void addUser(Scanner sc) {
+		User user = new User();
+		System.out.print("Reader's Name : ");
+		user.setUserName(Utilities.getInput());
+		System.out.print("Contact No : ");
+		user.setContactNo(sc.nextInt());
+		System.out.print("Email Id : ");
+		user.setEmailId(Utilities.getInput());
+		System.out.print("Address : ");
+		user.setAddress(Utilities.getInput());
+		System.out.print("Status : ");
+		user.setUserStatus(Utilities.getInput());
+		
+		if (userDAO.addUser(user)) {
+			System.out.println("Successfully Added");
+		} else {
+			System.out.println("failed");
+		}
+	}
+
+	public static void deleteBook(Scanner sc)
+	{
+		System.out.print("Enter the book Id you want to delete : ");
+		int bookId=sc.nextInt();
+		
+		if(bookDAO.deleteBook(bookId))
+		{
+			System.out.println("Successfully deleted!");
+		}
+		else
+		{
+			System.out.println("deletion failed!");
+		}
+	}
+	
+	public static void deactivateUser(Scanner sc)
+	{
+		System.out.print("Enter the user Id you want to delete : ");
+		int readerId=sc.nextInt();
+		
+		if(userDAO.removeUser(readerId))
+		{
+			System.out.println("Successfully deactivated!");
+		}
+		else
+		{
+			System.out.println("deactivation failed!");
+		}
+	}
+	public static void getBookById(Scanner sc)
+	{
+		System.out.print("Enter the book Id you want to display : ");
+		int bookId=sc.nextInt();
+		Book b=bookDAO.getBookById(bookId);
+		System.out.println(b.getBookId() + " " + b.getBookName() + " " + b.getAuthor() + " " + b.getReview() + " "
+				+ b.getEdition() + " " + b.getQuantity() + " " + b.getGenre());
+	}
+
+	public static void getUserById(Scanner sc)
+	{
+		System.out.print("Enter the User Id you want to display : ");
+		int userId=sc.nextInt();
+		User u=userDAO.getUserById( userId);
+		System.out.println(u.getUserId() + " " + u.getUserName() + " " + u.getAddress() + " " + u.getContactNo() + " "
+				+ u.getEmailId() + " " + u.getRegistrationDate() + " " + u.getRoleId()+" "+ u.getUserPassword() + " "+u.getUserStatus());
+	}
+	public static void editBook(Scanner sc)
+	{
+		Book book = new Book();
+		System.out.print("Enter the book Id you want to edit information of : ");
+		book.setBookId(sc.nextInt());
+		
+		System.out.print("Book Name : ");
+		book.setBookName(Utilities.getInput());
+		System.out.print("Author Name : ");
+		book.setAuthor(Utilities.getInput());
+		System.out.print("Edition : ");
+		book.setEdition(sc.nextInt());
+		System.out.print("Quantity : ");
+		book.setQuantity(sc.nextInt());
+		System.out.print("Genre : ");
+		book.setGenre(Utilities.getInput());
+
+		if (bookDAO.editBook(book)) {
+			System.out.println("Successfully updated!");
+		} else {
+			System.out.println("failed");
+		}
+	}
+	public static void editUser(Scanner sc)
+	{
+		User user = new User();
+		System.out.print("Enter the User Id you want to edit information of : ");
+		user.setUserId(sc.nextInt());
+		
+		System.out.print("User Name : ");
+		user.setUserName(Utilities.getInput());
+		System.out.print("Adress : ");
+		user.setAddress(Utilities.getInput());
+		System.out.print("Contact No. : ");
+		user.setContactNo(sc.nextLong());
+		System.out.print("User Status : ");
+		user.setUserStatus(Utilities.getInput());
+
+		if (userDAO.editUser(user)) {
+			System.out.println("Successfully updated!");
+		} else {
+			System.out.println("failed");
+		}
+	}
+
 
 	public boolean signUp(Scanner sc)// sign up
 	{
