@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public class User {
 	private int userId;
-	private String userStatus;
+	private boolean userStatus;
 	private String userName;
 	private long contactNo;
 	private String emailId;
@@ -12,67 +12,82 @@ public class User {
 	private LocalDate registrationDate;
 	private int roleId;
 	private String userPassword;
-	
-	public String getUserStatus() {
+
+	public boolean isUserStatus() {
 		return userStatus;
 	}
-	public void setUserStatus(String userStatus) {
+
+	public void setUserStatus(boolean userStatus) {
 		this.userStatus = userStatus;
 	}
-	
+
 	public int getUserId() {
 		return userId;
 	}
+
 	public void setUserId(int userId) {
 		this.userId = userId;
 	}
+
 	public long getContactNo() {
 		return contactNo;
 	}
+
 	public void setContactNo(long contactNo) {
 		this.contactNo = contactNo;
 	}
+
 	public String getEmailId() {
 		return emailId;
 	}
+
 	public void setEmailId(String emailId) {
 		this.emailId = emailId;
 	}
+
 	public String getAddress() {
 		return address;
 	}
+
 	public void setAddress(String address) {
 		this.address = address;
 	}
+
 	public LocalDate getRegistrationDate() {
 		return registrationDate;
 	}
+
 	public void setRegistrationDate(LocalDate registrationDate) {
 		this.registrationDate = registrationDate;
 	}
+
 	public int getRoleId() {
 		return roleId;
 	}
+
 	public void setRoleId(int roleId) {
 		this.roleId = roleId;
 	}
-	
-	
+
 	public String getUserName() {
 		return userName;
 	}
+
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
+
 	public String getUserPassword() {
 		return userPassword;
 	}
+
 	public void setUserPassword(String userPassword) {
 		this.userPassword = userPassword;
 	}
+
 	public User() {
 		this.userId = 0;
-		this.userStatus="";
+		this.userStatus = false;
 		this.userName = "";
 		this.contactNo = 0;
 		this.emailId = "";
@@ -81,10 +96,11 @@ public class User {
 		this.roleId = 0;
 		this.userPassword = "";
 	}
-	public User(int userId,String userStatus, String userName, long contactNo, String emailId, String address,
+
+	public User(int userId, boolean userStatus, String userName, long contactNo, String emailId, String address,
 			LocalDate registrationDate, int roleId, String userPassword) {
 		this.userId = userId;
-		this.userStatus=userStatus;
+		this.userStatus = userStatus;
 		this.userName = userName;
 		this.contactNo = contactNo;
 		this.emailId = emailId;

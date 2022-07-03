@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 import com.sudha.Utilities.LoginStatus;
@@ -23,16 +22,16 @@ public class UserDAOImpl implements UserDAO {
 		try {
 			con = DbConnection.getCon();
 			ps = con.prepareStatement(
-					"insert into table User(UserName,address,contactNo,emailId,regDate,roleId,userPassword)values(?,?,?,?,?,?,?)");
+					"insert into table User(UserName,address,contactNo,emailId,regDate,roleId,userPassword,userStatus)values(?,?,?,?,?,?,?)");
+			ps.setString(1, r.getUserName());
+			ps.setString(2, r.getAddress());
+			ps.setLong(3, r.getContactNo());
+			ps.setString(4, r.getEmailId());
+			ps.setDate(5, Date.valueOf(r.getRegistrationDate()));
+			ps.setInt(6, r.getRoleId());
+			ps.setString(7, r.getUserPassword());
+			ps.setBoolean(8, r.isUserStatus());
 
-			// ps.setInt(1, ps.getInt());
-			ps.setString(2, r.getUserStatus());
-			ps.setString(4, r.getUserName());
-			ps.setLong(5, r.getContactNo());
-			ps.setString(6, r.getEmailId());
-			ps.setString(7, r.getAddress());
-			ps.setInt(8, r.getRoleId());
-			ps.setString(9, r.getUserPassword());
 			int count = ps.executeUpdate();
 			if (count == 1) {
 				status = true;
@@ -53,7 +52,7 @@ public class UserDAOImpl implements UserDAO {
 			ps = con.prepareStatement(
 					"update User set getReaderName = ?,userStatus=?,contactNo=?,emailId=?,address=?,registrationDate=?,readerPassword=? where userId = ?");
 
-			ps.setString(1, user.getUserStatus());
+			ps.setBoolean(1, user.isUserStatus());
 			ps.setDate(2, Date.valueOf(user.getRegistrationDate()));
 			ps.setString(3, user.getUserName());
 			ps.setLong(4, user.getContactNo());
@@ -78,12 +77,11 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	public boolean removeUser(int userId) {
 		boolean status = false;
-		User u = new User();
 		try {
 			con = DbConnection.getCon();
-			ps = con.prepareStatement("update user set userStatus='deactived' where userId=?");
+			ps = con.prepareStatement("update user set userStatus=0 where userId=?");
 
-			ps.setString(userId, u.getUserStatus());
+			ps.setInt(userId, userId);
 
 			int count = ps.executeUpdate();
 
@@ -94,9 +92,7 @@ public class UserDAOImpl implements UserDAO {
 			System.out.println(e);
 			e.printStackTrace();
 		}
-
 		return status;
-
 	}
 
 	@Override
@@ -116,7 +112,7 @@ public class UserDAOImpl implements UserDAO {
 				u.setAddress(rs.getString("address"));
 				u.setRegistrationDate(rs.getDate("registrationDate").toLocalDate());
 				u.setRoleId(rs.getInt("roleId"));
-				u.setUserStatus(rs.getString("userStatus"));
+				u.setUserStatus(rs.getBoolean("userStatus"));
 				users.add(u);
 				con.close();
 			}
@@ -144,7 +140,7 @@ public class UserDAOImpl implements UserDAO {
 				u.setAddress(rs.getString("address"));
 				u.setRegistrationDate(rs.getDate("registrationDate").toLocalDate());
 				u.setRoleId(rs.getInt("roleId"));
-				u.setUserStatus(rs.getString("userStatus"));
+				u.setUserStatus(rs.getBoolean("userStatus"));
 				con.close();
 			}
 		} catch (Exception e) {
@@ -175,15 +171,14 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public LoggedInUser login(String rEmail, String rPasswd) {
+	public LoggedInUser login(String email, String passwd) {
 
 		LoggedInUser loggedInUser = new LoggedInUser();
 		User u = new User();
 		try {
 			con = DbConnection.getCon();
 			ps = con.prepareStatement("select * from users where emailId=?");
-			ps.setString(1, rEmail);
-			ps.setString(2, rPasswd);
+			ps.setString(1, email);
 			rs = ps.executeQuery();
 
 			if (rs.next()) {
@@ -194,17 +189,15 @@ public class UserDAOImpl implements UserDAO {
 				u.setAddress(rs.getString("address"));
 				u.setRegistrationDate(rs.getDate("registrationDate").toLocalDate());
 				u.setRoleId(rs.getInt("roleId"));
-				u.setUserStatus(rs.getString("userStatus"));
+				u.setUserStatus(rs.getBoolean("userStatus"));
 				loggedInUser.setUser(u);
-				if (rs.getString("userPassword").equals(rPasswd)) {
-					loggedInUser.setLoginStatus(LoginStatus.Success);	
+				if (rs.getString("userPassword").equals(passwd)) {
+					loggedInUser.setLoginStatus(LoginStatus.Success);
 				} else {
 					loggedInUser.setLoginStatus(LoginStatus.PasswordIncorrect);
 				}
-			}
-			else
-			{
-				loggedInUser.setLoginStatus(LoginStatus.UserNotFound);	
+			} else {
+				loggedInUser.setLoginStatus(LoginStatus.UserNotFound);
 			}
 			con.close();
 		} catch (Exception e) {
@@ -214,5 +207,3 @@ public class UserDAOImpl implements UserDAO {
 		return loggedInUser;
 	}
 }
-
-	
