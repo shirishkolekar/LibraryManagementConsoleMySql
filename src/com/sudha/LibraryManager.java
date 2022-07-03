@@ -8,7 +8,7 @@ public class LibraryManager {
 	static Scanner sc = new Scanner(System.in);
 	
 	public static void main(String[] args) {
-		
+		int selectedOption=-1;
 		
 		System.out.print("Welcome to Lirbrary!" );
 		System.out.print("Please login to proceed!" );
@@ -18,7 +18,8 @@ public class LibraryManager {
 		if(loggedInUser != null && loggedInUser.getLoginStatus() == LoginStatus.Success)
 		{
 			System.out.print("\n\n\t Login successfull!");
-		
+		do
+		{
 			//switching based on role
 			switch(loggedInUser.getUser().getRoleId())
 			{
@@ -32,10 +33,14 @@ public class LibraryManager {
 				Operation.showReaderMenu();				
 				break;
 			}
+			System.out.print("\n\n\t Your Choice!");
+			selectedOption  = sc.nextInt();
+		}while(selectedOption!=0);
+			
 		}
 		else
 		{
-			// extra work to be doen if login failed
+			// extra work to be done if login failed
 		}
 		
 		
@@ -48,10 +53,7 @@ public class LibraryManager {
 //			{
 //				do
 //				{
-//					System.out.print("Enter your UserId :" );
-//					String adminUserIdInput=sc.next();
-//					System.out.print("Enter your password :" );
-//					int adminPassInput=sc.nextInt();
+//				
 //			
 //					if(adminUserIdInput.equals(adminUserId)&& adminPassInput==adminPass)
 //					{
