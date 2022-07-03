@@ -41,13 +41,13 @@ public class LibraryManager {
 						// admin function calls - start
 						switch (selectedOption) {
 						case 1: // approve Librarian
-							Operation.showAdminMenu();
+							Operation.approveRejectLibrarian(sc, true);
 							break;
 						case 2:// reject Librarian
-							Operation.showLibrarianMenu();
+							Operation.approveRejectLibrarian(sc, false);
 							break;
 						case 3:// quit
-							Operation.showReaderMenu();
+							loggedInUser = null;
 							break;
 						default:
 							System.out.print("\n\n\t Invalid Option selected!");
@@ -97,13 +97,10 @@ public class LibraryManager {
 				} while (selectedOption != 0);
 
 			} else {
-				if(loggedInUser != null && loggedInUser.getLoginStatus() == LoginStatus.PasswordIncorrect)
-				{
-					// 
-				}
-				else if(loggedInUser != null && loggedInUser.getLoginStatus() == LoginStatus.UserNotFound)
-				{
-					//register
+				if (loggedInUser != null && loggedInUser.getLoginStatus() == LoginStatus.PasswordIncorrect) {
+					//
+				} else if (loggedInUser != null && loggedInUser.getLoginStatus() == LoginStatus.UserNotFound) {
+					// register
 				}
 			}
 

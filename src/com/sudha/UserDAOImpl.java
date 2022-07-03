@@ -216,4 +216,23 @@ public class UserDAOImpl implements UserDAO {
 		}
 		return loggedInUser;
 	}
+
+	@Override
+	public boolean approveRejectLibrarian(int librarianId, boolean isApproved) {
+		boolean status = false;
+		try {
+			con = DbConnection.getCon();
+			ps = con.prepareStatement("update users set userStatus=? where userId = ?");
+			ps.setBoolean(1, isApproved);
+			ps.setInt(2, librarianId);
+			int count = ps.executeUpdate();
+			if (count == 1) {
+				status = true;
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+			e.printStackTrace();
+		}
+		return status;
+	}
 }

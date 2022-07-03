@@ -16,4 +16,5 @@ public interface UserDAO {
 	boolean isUserExists(String email);
 
 	LoggedInUser login(String email, String passwd);
+	boolean approveRejectLibrarian(int librarianId, boolean isApproved);
 }

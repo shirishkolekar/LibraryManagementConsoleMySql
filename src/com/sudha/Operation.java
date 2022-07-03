@@ -55,10 +55,10 @@ public class Operation {
 	}
 
 	public static void showAllUsers() {
-		for (User u : userDAO.displayAllUsers()) {
+		for (User u : userDAO.displayAllUsers(0)) {
 			System.out.println(u.getUserId() + " " + u.getUserName() + " " + u.getAddress() + " " + u.getContactNo()
 					+ " " + u.getEmailId() + " " + u.getRegistrationDate() + " " + u.getRoleId() + " "
-					+ u.getUserPassword() + " " + u.getUserStatus());
+					+ u.getUserPassword() + " " + u.isUserStatus());
 		}
 	}
 
@@ -92,8 +92,8 @@ public class Operation {
 		user.setEmailId(Utilities.getInput());
 		System.out.print("Address : ");
 		user.setAddress(Utilities.getInput());
-		System.out.print("Status : ");
-		user.setUserStatus(Utilities.getInput());
+		//System.out.print("Status : ");
+		//user.setUserStatus(Utilities.getInput());
 
 		if (userDAO.addUser(user)) {
 			System.out.println("Successfully Added");
@@ -138,7 +138,7 @@ public class Operation {
 		User u = userDAO.getUserById(userId);
 		System.out.println(u.getUserId() + " " + u.getUserName() + " " + u.getAddress() + " " + u.getContactNo() + " "
 				+ u.getEmailId() + " " + u.getRegistrationDate() + " " + u.getRoleId() + " " + u.getUserPassword() + " "
-				+ u.getUserStatus());
+				+ u.isUserStatus());
 	}
 
 	public static void editBook(Scanner sc) {
@@ -174,8 +174,8 @@ public class Operation {
 		user.setAddress(Utilities.getInput());
 		System.out.print("Contact No. : ");
 		user.setContactNo(sc.nextLong());
-		System.out.print("User Status : ");
-		user.setUserStatus(Utilities.getInput());
+		//System.out.print("User Status : ");
+		//user.setUserStatus(Utilities.getInput());
 
 		if (userDAO.editUser(user)) {
 			System.out.println("Successfully updated!");
@@ -208,8 +208,15 @@ public class Operation {
 
 				System.out.println("Role Id(1 - Librarian 2 - Reader) : ");
 				user.setRoleId(sc.nextInt());
-			}
-
+			
+				if(user.getRoleId()==1)
+				{
+					user.setUserStatus(false);
+				}
+				else
+					user.setUserStatus(true);
+				}
+			
 			if (userDAO.addUser(user)) {
 				signUpStatus = true;
 			}
@@ -288,5 +295,63 @@ public class Operation {
 		}
 		return approvalStatus;
 	}
+	public static void approveRejectLibrarian(Scanner sc, boolean toApprove) {
+		ArrayList<User> users = userDAO.displayAllUsers(2);
+		if(users.size()>0)
+		{
+			for(User l:users)
+			{
+				if(toApprove)
+				{
+					if(!l.isUserStatus())
+					{
+						System.out.println(l.getUserId() + " " + l.getUserName() + " " + l.getAddress() + " " + l.getContactNo()
+						+ " " + l.getEmailId() + " " + l.getRegistrationDate() + " " + l.getRoleId() + " "
+						+ l.getUserPassword() + " " + l.isUserStatus());				
+					}	
+				}
+				else
+				{
+					if(l.isUserStatus())
+					{
+						System.out.println(l.getUserId() + " " + l.getUserName() + " " + l.getAddress() + " " + l.getContactNo()
+						+ " " + l.getEmailId() + " " + l.getRegistrationDate() + " " + l.getRoleId() + " "
+						+ l.getUserPassword() + " " + l.isUserStatus());				
+					}
+				}
+			}
+			if(toApprove)
+			{
+				System.out.println("Enter Librarian Id to approve!");	
+			}
+			else
+			{
+				System.out.println("Enter Librarian Id to reject!");
+			}
+			int librarianId = sc.nextInt();
+			boolean operationStatus=false;
+			if(toApprove)
+			{
 
+				operationStatus = userDAO.approveRejectLibrarian(librarianId, true);	
+			}
+			else
+			{
+				operationStatus = userDAO.approveRejectLibrarian(librarianId, false);
+			}
+			
+			if(operationStatus)
+			{
+				System.out.println("Librarian "+(toApprove ? "approved" : "rejected")+" successfully!");	
+			}
+			else
+			{
+				System.out.println("Operation failed!");
+			}
+		}
+		else
+		{
+			System.out.println("No Librarian is pending for approval!");
+		}
+}
 }
