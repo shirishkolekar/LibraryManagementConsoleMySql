@@ -32,18 +32,17 @@ public class Operation {
 	}
 
 	public static void showAdminMenu() {
-		System.out.println("\n" + " 1 - Add Book\n" + "2 - Show Books\n" + "3 - Show Readers'Detail\n" + "4 - Search\n"
-				+ "5 - Approve subscription\n" + "6 - Edit Book\n" + "5 - Approve Borrow");
+		System.out.println("\n" + " 1 - Approve Signup\n" + "2 - Reject SignUp \n" + "0 - Quit");
 	}
 
 	public static void showLibrarianMenu() {
-		System.out.println("\n" + " 1 - Add Book\n" + "2 - Show Books\n" + "3 - Show Readers'Detail\n" + "4 - Search\n"
-				+ "5 - Approve subscription\n" + "6 - Edit Book\n" + "5 - Approve Borrow");
+		System.out.println("\n" + " 1 - Add Book\n" + "2 - Show Books\n"+ "3 - Edit Book\n" + "4 - Show All readers\n" + "5 - Add User\n"+ "6 - Edit User Details \n"+ "7 - Search\n"
+				+ "8 - Approve subscription\n"  + "9 - Approve Borrow"+ "10 - Sign Up+ \"0 -Quit \n");// do we have saperate menu for login and signup?
 	}
 
 	public static void showReaderMenu() {
-		System.out.println("\n" + " 1 - Add Book\n" + "2 - Show Books\n" + "3 - Show Readers'Detail\n" + "4 - Search\n"
-				+ "5 - Approve subscription\n" + "6 - Edit Book\n" + "5 - Approve Borrow");
+		System.out.println("\n" + "1 - Sign Up\n" + " 2- Show Books\n" +"3 - Show my Account\n" +"4 - Edit my Account\n"+ "5 - Search\n"
+				+ "6 - subscription\n" + "7 - Borrow Book" + "8 - Return book\n" +"0 - Quit");
 	}
 
 	// Librarian functions
