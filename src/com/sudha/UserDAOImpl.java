@@ -174,7 +174,7 @@ public class UserDAOImpl implements UserDAO {
 	public LoggedInUser login(String email, String passwd) {
 
 		LoggedInUser loggedInUser = new LoggedInUser();
-		User u = new User();
+		User u = null;
 		try {
 			con = DbConnection.getCon();
 			ps = con.prepareStatement("select * from users where emailId=?");
@@ -182,6 +182,7 @@ public class UserDAOImpl implements UserDAO {
 			rs = ps.executeQuery();
 
 			if (rs.next()) {
+				u = new User();
 				u.setUserId(rs.getInt("userId"));
 				u.setUserName(rs.getString("readerName"));
 				u.setContactNo(rs.getLong("contactNo"));

@@ -21,4 +21,15 @@ public class LoggedInUser {
 	public void setLoginStatus(LoginStatus loginStatus) {
 		this.loginStatus = loginStatus;
 	}
+
+	public LoggedInUser() {
+		this.user = null;
+		this.loginStatus = null;
+	}
+
+	public LoggedInUser(User user, LoginStatus loginStatus) {
+		this.user = user;
+		this.loginStatus = loginStatus;
+	}
+
 }
