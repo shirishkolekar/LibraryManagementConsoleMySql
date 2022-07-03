@@ -36,13 +36,13 @@ public class Operation {
 	}
 
 	public static void showLibrarianMenu() {
-		System.out.println("\n" + " 1 - Add Book\n" + "2 - Show Books\n"+ "3 - Edit Book\n" + "4 - Show All readers\n" + "5 - Add User\n"+ "6 - Edit User Details \n"+ "7 - Search\n"
-				+ "8 - Approve subscription\n"  + "9 - Approve Borrow"+ "10 - Sign Up+ \"0 -Quit \n");// do we have saperate menu for login and signup?
+		System.out.println("\n" + " 1 - Add Book\n" + "2 - Show Books\n"+ "3 - Edit Book\n" + "4 - Show All readers\n" +  "5 - Edit User Details \n"+ "6 - Search book\n"+ "7 - Search User"+ "8 - Deactivate User"+ "9 - Deactivate Book"
+				+ "10 - Approve subscription\n"  + "11 - Approve Borrow\n"+ "12 - Approve return"+ "13 - Add reader + \"0 -Quit \n");
 	}
 
 	public static void showReaderMenu() {
-		System.out.println("\n" + "1 - Sign Up\n" + " 2- Show Books\n" +"3 - Show my Account\n" +"4 - Edit my Account\n"+ "5 - Search\n"
-				+ "6 - subscription\n" + "7 - Borrow Book" + "8 - Return book\n" +"0 - Quit");
+		System.out.println("\n 1- Show Books\n" +"2 - Show my Account\n" +"3 - Edit my Account\n"+ "4 - Search Book\n"
+				+ "5 - subscription\n" + "6 - Borrow Book" + "7 - Return book\n" +"0 - Quit");
 	}
 
 	// Librarian functions
@@ -254,7 +254,7 @@ public class Operation {
 		return status;
 	}
 
-	public boolean approveBookBorrow(BookBorrow bb, int bookId, int userId, Scanner Sc) {
+	public void approveBookBorrow(BookBorrow bb, int bookId, int userId, Scanner Sc) {
 		ArrayList<BorrowedBookDetail> borrowedBookDetailList = bookBorrowDAO.ShowListOfBooksBorrowDetails();
 		// Bookborrow requests pending for approval.
 		for (BorrowedBookDetail bbd : borrowedBookDetailList) {
@@ -293,7 +293,7 @@ public class Operation {
 			System.out.println(e);
 			e.printStackTrace();
 		}
-		return approvalStatus;
+		//return approvalStatus;
 	}
 	public static void approveRejectLibrarian(Scanner sc, boolean toApprove) {
 		ArrayList<User> users = userDAO.displayAllUsers(2);
@@ -351,7 +351,7 @@ public class Operation {
 		}
 		else
 		{
-			System.out.println("No Librarian is pending for approval!");
+			System.out.println("No Librarian is pending for approval/rejection!");
 		}
 }
 }

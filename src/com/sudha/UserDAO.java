@@ -17,4 +17,5 @@ public interface UserDAO {
 
 	LoggedInUser login(String email, String passwd);
 	boolean approveRejectLibrarian(int librarianId, boolean isApproved);
+
 }
