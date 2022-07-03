@@ -9,7 +9,7 @@ public interface UserDAO {
 
 	boolean removeUser(int userId);
 
-	ArrayList<User> displayAllUsers();
+	ArrayList<User> displayAllUsers(int roleId);
 
 	User getUserById(int userId);
 

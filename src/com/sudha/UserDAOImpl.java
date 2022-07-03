@@ -96,12 +96,21 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public ArrayList<User> displayAllUsers() {
+	public ArrayList<User> displayAllUsers(int roleId) {
 		ArrayList<User> users = new ArrayList<User>();
 		User u = null;
 		try {
 			con = DbConnection.getCon();
-			ps = con.prepareStatement("select * from users");
+			String query = "select * from users";
+			if(roleId!=0)
+			{				
+				query+="where roleId = ?";
+			}
+			ps = con.prepareStatement(query);
+			if(roleId!=0)
+			{				
+				ps.setInt(0, roleId);
+			}
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				u = new User();
