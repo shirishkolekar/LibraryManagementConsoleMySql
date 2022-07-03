@@ -6,46 +6,97 @@ import com.sudha.Utilities.LoginStatus;
 
 public class LibraryManager {
 	static Scanner sc = new Scanner(System.in);
-	
+
 	public static void main(String[] args) {
-		int selectedOption=-1;
-		
-		System.out.print("Welcome to Lirbrary!" );
-		System.out.print("Please login to proceed!" );
-		
+		int selectedOption = -1;
+
+		System.out.print("Welcome to Lirbrary!");
+		System.out.print("Please login to proceed!");
+
 		LoggedInUser loggedInUser = Operation.login();
-		
-		if(loggedInUser != null && loggedInUser.getLoginStatus() == LoginStatus.Success)
-		{
+
+		if (loggedInUser != null && loggedInUser.getLoginStatus() == LoginStatus.Success) {
 			System.out.print("\n\n\t Login successfull!");
-		do
-		{
-			//switching based on role
-			switch(loggedInUser.getUser().getRoleId())
-			{
-			case 1:				
-				Operation.showAdminMenu();
-				break;
-			case 2:
-				Operation.showLibrarianMenu();				
-				break;
-			case 3:
-				Operation.showReaderMenu();				
-				break;
-			}
-			System.out.print("\n\n\t Your Choice!");
-			selectedOption  = sc.nextInt();
-		}while(selectedOption!=0);
-			
-		}
-		else
-		{
+			do {
+				// switching based on role
+				switch (loggedInUser.getUser().getRoleId()) {
+				case 1:
+					Operation.showAdminMenu();
+					break;
+				case 2:
+					Operation.showLibrarianMenu();
+					break;
+				case 3:
+					Operation.showReaderMenu();
+					break;
+				}
+				System.out.print("\n\n\t Your Choice!");
+				selectedOption = sc.nextInt();
+
+				switch (loggedInUser.getUser().getRoleId()) {
+				case 1:
+					// admin function calls - start
+					switch (selectedOption) {
+					case 1: // approve Librarian
+						Operation.showAdminMenu();
+						break;
+					case 2:// reject Librarian
+						Operation.showLibrarianMenu();
+						break;
+					case 3:// quit
+						Operation.showReaderMenu();
+						break;
+					default:
+						System.out.print("\n\n\t Invalid Option selected!");
+						break;
+					}
+					// admin function calls - end
+					break;
+				case 2:
+					// librarian function calls - start
+					switch (selectedOption) {
+					case 1: // approve Librarian
+						Operation.showAdminMenu();
+						break;
+					case 2:// reject Librarian
+						Operation.showLibrarianMenu();
+						break;
+					case 3:// quit
+						Operation.showReaderMenu();
+						break;
+					default:
+						System.out.print("\n\n\t Invalid Option selected!");
+						break;
+					}
+					// librarian function calls - end
+
+					break;
+				case 3:
+					// reader function calls - start
+					switch (selectedOption) {
+					case 1: // approve Librarian
+						Operation.showAdminMenu();
+						break;
+					case 2:// reject Librarian
+						Operation.showLibrarianMenu();
+						break;
+					case 3:// quit
+						Operation.showReaderMenu();
+						break;
+					default:
+						System.out.print("\n\n\t Invalid Option selected!");
+						break;
+					}
+					// reader function calls - end
+					break;
+				}
+
+			} while (selectedOption != 0);
+
+		} else {
 			// extra work to be done if login failed
 		}
-		
-		
-		
-		
+
 //		System.out.println("1- Admin Login  2- Reader Login");
 //		int input=sc.nextInt();
 //		menuloop1:	
