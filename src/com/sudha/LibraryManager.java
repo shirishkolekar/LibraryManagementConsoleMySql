@@ -14,10 +14,24 @@ public class LibraryManager {
 		String bookName = null;
 		int selectedOption = -1;
 		boolean loginAgain = false;
-		LoggedInUser l=new LoggedInUser();
+		boolean signUpStatus = false;
 		System.out.print("Welcome to Lirbrary!");
 		do {
 			// login again - start
+			
+			do
+			{
+				System.out.print("\n\n\t Are you an existing user or new user? 1 - New User 2 - Existing User");
+				System.out.print("\n\n\t Your Choice : ");
+				if(sc.nextInt() == 1)
+				{
+					signUpStatus = Operation.signUp(sc);
+				}
+				else if(sc.nextInt() == 2)
+				{
+					signUpStatus = true;
+				}					
+			}while(!signUpStatus);	
 
 			System.out.print("Please login to proceed!");
 

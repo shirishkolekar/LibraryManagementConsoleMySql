@@ -103,9 +103,6 @@ public class Operation {
 		user.setEmailId(Utilities.getInput());
 		System.out.print("Address : ");
 		user.setAddress(Utilities.getInput());
-		// System.out.print("Status : ");
-		// user.setUserStatus(Utilities.getInput());
-
 		if (userDAO.addUser(user)) {
 			System.out.println("Successfully Added");
 		} else {
@@ -231,7 +228,7 @@ public class Operation {
 
 
 
-	public boolean signUp(Scanner sc) {
+	public static boolean signUp(Scanner sc) {
 		User user = new User();
 		boolean signUpStatus = false;
 		try {
