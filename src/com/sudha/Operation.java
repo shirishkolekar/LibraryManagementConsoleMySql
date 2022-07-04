@@ -1,5 +1,6 @@
 package com.sudha;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -8,13 +9,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Operation {
+public class Operation implements ProjectConfig {
 	public static BookDAO bookDAO = new BookDAOImpl();
 	public static UserDAO userDAO = new UserDAOImpl();
 	public static SubscriptionDAO subscriptionDAO = new SubscriptionDAOImpl();
-
+	public static BookBorrowDAO bookBorrowDAO = new BookBorrowDAOImpl();
 	ArrayList<User> users = new ArrayList<User>();
-	BookBorrowDAO bookBorrowDAO = new BookBorrowDAOImpl();
+
 	static Connection con;
 
 	static PreparedStatement ps;
@@ -66,8 +67,8 @@ public class Operation {
 
 	public static void addBook(Scanner sc, String bookName) {
 		System.out.println("Enter the book name you want to add : ");
-		bookName=sc.next();
-		Book book=null;
+		bookName = sc.next();
+		Book book = null;
 		if (bookDAO.addBook(book)) {
 			if (bookDAO.isBookAlreadyExists(bookName)) {
 				System.out.print("Enter the quantity of the book to add  :");
@@ -149,12 +150,13 @@ public class Operation {
 				+ u.isUserStatus());
 	}
 
-	public static void showMyAccount(Scanner sc, User user) {
-		User u = userDAO.getUserById(user.getUserId());
+	public static void showMyAccount(Scanner sc, int userId) {
+		User u = userDAO.getUserById(userId);
 		System.out.println(u.getUserId() + " " + u.getUserName() + " " + u.getAddress() + " " + u.getContactNo() + " "
 				+ u.getEmailId() + " " + u.getRegistrationDate() + " " + u.getRoleId() + " " + u.getUserPassword() + " "
 				+ u.isUserStatus());
 	}
+
 	public static void editBook(Scanner sc) {
 		Book book = new Book();
 		System.out.print("Enter the book Id you want to edit information of : ");
@@ -197,36 +199,36 @@ public class Operation {
 			System.out.println("failed");
 		}
 	}
-	
-	public static void changeAddress(Scanner sc, LoggedInUser l) {
+
+	public static void changeAddress(Scanner sc, int userId) {
+
 		System.out.print("Enter you new Address : ");
-		l.getUser().setAddress(Utilities.getInput());
-		if (userDAO.editUser(l.getUser().getAddress())) {
+		String address = Utilities.getInput();
+
+		User u = userDAO.getUserById(userId);
+		u.setAddress(address);
+
+		if (userDAO.editUser(u)) {
 			System.out.println("Successfully updated!");
 		} else {
 			System.out.println("failed");
 		}
 	}
-	
-	public static void searchUser(Scanner sc){// have to correct method
-		
-		System.out.println("Choose an option to search User\n"+"1 - Search by UserId : \n"+"1 - Search by Contact No. : \n"+"1 - Search by User Name : ");
+
+	public static void searchUser(Scanner sc) {// have to correct method
+
+		System.out.println("Choose an option to search User\n" + "1 - Search by UserId : \n"
+				+ "1 - Search by Contact No. : \n" + "1 - Search by User Name : ");
 		int searchInput = sc.nextInt();
-		User u=null;
-		userDAO.searchUser(searchInput);
-		
-		u=new User();
-		System.out.println(u.getUserId() + " " + u.getUserName() + " " + u.getAddress() + " " + u.getContactNo() + " "
-				+ u.getEmailId() + " " + u.getRegistrationDate() + " " + u.getRoleId() + " " + u.getUserPassword() + " "
-				+ u.isUserStatus());
-		
-		else
-		{
-		System.out.println("User does not exist!");	
+		User u = userDAO.searchUser(searchInput);
+		if (u != null) {
+			System.out.println(u.getUserId() + " " + u.getUserName() + " " + u.getAddress() + " " + u.getContactNo()
+					+ " " + u.getEmailId() + " " + u.getRegistrationDate() + " " + u.getRoleId() + " "
+					+ u.getUserPassword() + " " + u.isUserStatus());
+		} else {
+			System.out.println("User does not exist!");
 		}
-		}
-
-
+	}
 
 	public static boolean signUp(Scanner sc) {
 		User user = new User();
@@ -269,34 +271,20 @@ public class Operation {
 		return signUpStatus;
 	}
 
-	public boolean subscription(Scanner sc, User u) {
-		Subscription subscription = new Subscription();
-		boolean status = false;
-		try {
-			if (userDAO.isUserExists(u.getEmailId())) {
-				con = DbConnection.getCon();
-				ps = con.prepareStatement(
-						"insert into subscription(amount,dateOfSubscription, validity, approved)values(?,?,?,?)");
-				ps.setLong(1, subscription.getAmount());
-				ps.setDate(2, Date.valueOf(subscription.getDateOfSubscription()));
-				ps.setDate(3, Date.valueOf(subscription.getValidity()));// Sir would apply the method in SQL.
-				ps.setBoolean(4, subscription.isApproved());
-			} else {
-				System.out.println("Please login first!!!");
-			}
-			int count = ps.executeUpdate();
-			if (count == 1) {
-				status = true;
-			}
+	public static void addSubscription(Scanner sc, int userId) {
 
-		} catch (Exception e) {
-			System.out.println(e);
-			e.printStackTrace();
+		System.out.print("\n\n\t Enter number of days you want to take subscription for : ");
+		int days = sc.nextInt();
+
+		BigDecimal subscriptionAmount = new BigDecimal(dailySubscriptionAmount * days);
+		if (subscriptionDAO.addSubscription(userId, subscriptionAmount, days)) {
+			System.out.println("Subscription Added! Waiting for approval!");
+		} else {
+			System.out.println("Failed to add Subscription! Please Try Again!");
 		}
-		return status;
 	}
 
-	public void approveBookBorrow(Scanner Sc) {
+	public static void approveBookBorrow(Scanner Sc) {
 		ArrayList<BorrowedBookDetail> borrowedBookDetailList = bookBorrowDAO.ShowListOfBooksBorrowDetails();
 		// Bookborrow requests pending for approval.
 		for (BorrowedBookDetail bbd : borrowedBookDetailList) {
@@ -379,49 +367,39 @@ public class Operation {
 			System.out.println("No Librarian is pending for approval/rejection!");
 		}
 	}
-	
-	public static void approveSubscription(Scanner sc) {//need to complete it
-		Subscription subscription = new Subscription();
-		
-		System.out.println("Subscription Ids to be approved :");
-		System.out.println(subscription.getSubscriptionId());
-		
-		System.out.println("Do you want to approve subscription (y/n)");
-		try {
-			con = DbConnection.getCon();
-			ps = con.prepareStatement("select subscriptionId where approved=false");
-			rs = ps.executeQuery();
 
-			while (rs.next()) {
-				subscription.setSubscriptionId(rs.getInt("subscriptionId"));
-				System.out.println(subscription.getSubscriptionId());
-			}
+	public static void approveSubscription(Scanner sc) {
 
-			System.out.println("Do you want to approve subscription (y/n)");
-			char input = sc.next().charAt(0);
+//		 show list of subscriptions to be approved
+		ArrayList<Subscription> subscriptionsToApprove = subscriptionDAO.ShowAllSubscriptionsToBeApproved();
 
-			System.out.print("Enter the subscription Id you want to approve or reject:");
-			int subscriptionId = sc.nextInt();
-			if (input == 'Y' || input == 'y')// to approve subscription
-			{
-				ps1 = con.prepareStatement("update Subscription set approved=false, where subscriptionId=?");
-				ps1.setInt(1, subscriptionId);
-				ps1.setBoolean(2, false);// need to check from sir.
-				int count = ps1.executeUpdate();
-
-				if (count == 1) {
-					status = true;
-				}
-			} else// To reject subscription
-			{
-				System.out.println("Payment failed..try again!");
-			}
-		} catch (Exception e) {
-			System.out.println(e);
-			e.printStackTrace();
+		for (Subscription s : subscriptionsToApprove) {
+			System.out.println(s.getSubscriptionId());
 		}
 
-		return status;
-	}
+//		 ask librarian for subscription id to approve 
 
+		System.out.print("Enter the subscription Id you want to approve or reject:");
+		int subscriptionId = sc.nextInt();
+
+//		 ask whether to approve or reject
+		System.out.print("Enter 1 for approve or 2 for reject : ");
+		int decision = sc.nextInt();
+
+//		 save the change in database
+//		 	- if approve set flag to true
+//		 	- if reject then delete entry in db
+
+		if (subscriptionDAO.approveOrRejectSubscription(subscriptionId, decision)) {
+			// db operation is successful
+			if (decision == 1) {
+				System.out.print("\n\n\t Subscription Approved Successfully!");
+			} else {
+				System.out.print("\n\n\t Subscription rejected Successfully!");
+			}
+		} else {
+			// db operation is failed
+			System.out.print("\n\n\t Operation on Subscription failed! Please try again!");
+		}
+	}
 }

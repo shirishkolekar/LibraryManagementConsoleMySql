@@ -18,20 +18,16 @@ public class LibraryManager {
 		System.out.print("Welcome to Lirbrary!");
 		do {
 			// login again - start
-			
-			do
-			{
+
+			do {
 				System.out.print("\n\n\t Are you an existing user or new user? 1 - New User 2 - Existing User");
 				System.out.print("\n\n\t Your Choice : ");
-				if(sc.nextInt() == 1)
-				{
+				if (sc.nextInt() == 1) {
 					signUpStatus = Operation.signUp(sc);
-				}
-				else if(sc.nextInt() == 2)
-				{
+				} else if (sc.nextInt() == 2) {
 					signUpStatus = true;
-				}					
-			}while(!signUpStatus);	
+				}
+			} while (!signUpStatus);
 
 			System.out.print("Please login to proceed!");
 
@@ -108,7 +104,7 @@ public class LibraryManager {
 							Operation.deleteBook(sc);
 							break;
 						case 11:// Approve subscription
-							Operation.approveSubscription(sc);//need to complete in operation
+							Operation.approveSubscription(sc);
 							break;
 						case 12:// Approve Borrow
 							Operation.approveBookBorrow(sc);
@@ -130,17 +126,17 @@ public class LibraryManager {
 						case 1: // Show Books
 							bookDAO.getAllBooks();
 							break;
-						case 2://Show my account
-							Operation.showMyAccount(sc,l.getUser.getUserId);//need to fix it
+						case 2://Show my account							
+							Operation.showMyAccount(sc,loggedInUser.getUser().getUserId());
 							break;
 						case 3:// Change Address
-							Operation.changeAddress(sc, LoggedInUser l)//need to correct.
+							Operation.changeAddress(sc, loggedInUser.getUser().getUserId());
 							break;
 						case 4:// Search book
 							Operation.searchBook(sc);
 							break;
 						case 5:// Subscription
-							Operation.subscription(sc, User u);//one method is created in operation only
+							Operation.addSubscription(sc,loggedInUser.getUser().getUserId());//one method is created in operation only
 							break;
 						case 6:// Borrow book
 							Operation.showReaderMenu();//single method in impl
