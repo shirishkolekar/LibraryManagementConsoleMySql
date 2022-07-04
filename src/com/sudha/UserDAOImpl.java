@@ -102,13 +102,11 @@ public class UserDAOImpl implements UserDAO {
 		try {
 			con = DbConnection.getCon();
 			String query = "select * from users";
-			if(roleId!=0)
-			{				
-				query+="where roleId = ?";
+			if (roleId != 0) {
+				query += "where roleId = ?";
 			}
 			ps = con.prepareStatement(query);
-			if(roleId!=0)
-			{				
+			if (roleId != 0) {
 				ps.setInt(0, roleId);
 			}
 			rs = ps.executeQuery();
@@ -131,27 +129,72 @@ public class UserDAOImpl implements UserDAO {
 		}
 		return users;
 	}
-
-	@Override
-	public User getUserById(int userId) {
-		User u = new User();
-		try {
+	
+	public User getUserById(int userId)
+	{
+		User u=new User();
+		try
+		{
 			con = DbConnection.getCon();
 			ps = con.prepareStatement("select * from users where usesrId=?");
 			ps.setInt(1, userId);
 			rs = ps.executeQuery();
+			
+			if(rs.next())
+			{
+					u.setUserId(rs.getInt("userId"));
+					u.setUserName(rs.getString("readerName"));
+					u.setContactNo(rs.getLong("contactNo"));
+					u.setEmailId(rs.getString("emailId"));
+					u.setAddress(rs.getString("address"));
+					u.setRegistrationDate(rs.getDate("registrationDate").toLocalDate());
+					u.setRoleId(rs.getInt("roleId"));
+					//u.setUserStatus(rs.getString("userStatus"));
+					con.close();
+			}	
+		} catch (Exception e) {
+			System.out.println(e);
+			e.printStackTrace();
+		}
+		return u;	
+	}
 
-			if (rs.next()) {
-				u.setUserId(rs.getInt("userId"));
-				u.setUserName(rs.getString("readerName"));
-				u.setContactNo(rs.getLong("contactNo"));
-				u.setEmailId(rs.getString("emailId"));
-				u.setAddress(rs.getString("address"));
-				u.setRegistrationDate(rs.getDate("registrationDate").toLocalDate());
-				u.setRoleId(rs.getInt("roleId"));
-				u.setUserStatus(rs.getBoolean("userStatus"));
-				con.close();
-			}
+
+	@Override
+	public User searchUser(int searchInput) {
+		User u = null;
+		try {
+				con = DbConnection.getCon();
+				if(searchInput==1)
+				{
+					ps = con.prepareStatement("select * from users where userId=?");	
+					ps.setInt(1,u.getUserId() );
+				}
+				else if(searchInput==2)
+				{
+					ps = con.prepareStatement("select * from users where contactNo=?");
+					ps.setLong(1,u.getContactNo() );
+				}
+				else if(searchInput==3)
+				{
+					ps = con.prepareStatement("select * from users where userName=?");
+					ps.setString(1,u.getUserName() );
+				}
+					rs = ps.executeQuery();
+
+				if (rs.next())
+				{
+					u=new User();
+					u.setUserId(rs.getInt("userId"));
+					u.setUserName(rs.getString("readerName"));
+					u.setContactNo(rs.getLong("contactNo"));
+					u.setEmailId(rs.getString("emailId"));
+					u.setAddress(rs.getString("address"));
+					u.setRegistrationDate(rs.getDate("registrationDate").toLocalDate());
+					u.setRoleId(rs.getInt("roleId"));
+					u.setUserStatus(rs.getBoolean("userStatus"));
+					con.close();
+				}
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
@@ -235,4 +278,4 @@ public class UserDAOImpl implements UserDAO {
 		}
 		return status;
 	}
-}
+	}

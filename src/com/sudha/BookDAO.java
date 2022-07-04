@@ -7,5 +7,6 @@ public interface BookDAO {
 	boolean editBook(Book book);
 	boolean deleteBook(int bookId);
 	ArrayList<Book> getAllBooks();
-	Book getBookById(int bookId);	
+	Book getBookById(int bookId);
+	boolean isBookAlreadyExists(String bookName);
 }

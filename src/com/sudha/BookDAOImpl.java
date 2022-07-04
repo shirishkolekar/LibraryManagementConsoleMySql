@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class BookDAOImpl implements BookDAO {
 	static Connection con;
 	static PreparedStatement ps;
+	static PreparedStatement ps1;
 	static ResultSet rs;
 
 	@Override
@@ -38,24 +39,59 @@ public class BookDAOImpl implements BookDAO {
 	}
 
 	@Override
-	public boolean addBook(Book book) {
+	public boolean isBookAlreadyExists(String bookName) {
 		boolean status = false;
 		try {
 			con = DbConnection.getCon();
-			ps = con.prepareStatement(
-					"insert into books(bookName,author,review,edition,quantitity,genreId) values(?,?,?,?,?,?)");
-
-			ps.setString(1, book.getBookName());
-			ps.setString(2, book.getAuthor());
-			ps.setInt(3, book.getReview());
-			ps.setInt(4, book.getEdition());
-			ps.setInt(5, book.getQuantity());
-			ps.setInt(6, book.getGenreId());
-
-			int count = ps.executeUpdate();
-
-			if (count == 1) {
+			ps = con.prepareStatement("select * from books where bookName=?");
+			ps.setString(1, bookName);
+			rs = ps.executeQuery();
+			if (rs.next()) {
 				status = true;
+			}
+		} catch (Exception ex) {
+			System.out.println(ex);
+			ex.printStackTrace();
+		}
+
+		return status;
+	}
+
+	@Override
+	public boolean addBook(Book book) {
+		boolean status = false;
+		con = DbConnection.getCon();
+		try {
+			if (isBookAlreadyExists(book.getBookName())) {
+				ps = con.prepareStatement("select quantity where bookName=?");
+				ps.setString(1, book.getBookName());
+				rs = ps.executeQuery();
+
+				if (rs.next()) {
+					ps = con.prepareStatement("update books set quantity=? where bookName=?");
+					ps.setInt(1, book.getQuantity() + rs.getInt("quantity"));
+
+				}
+				int count = ps.executeUpdate();
+
+				if (count == 1) {
+					status = true;
+				}
+			} else {
+				ps = con.prepareStatement(
+						"insert into books(bookName,author,review,edition,quantitity,genreId) values(?,?,?,?,?,?)");
+
+				ps.setString(1, book.getBookName());
+				ps.setString(2, book.getAuthor());
+				ps.setInt(3, book.getReview());
+				ps.setInt(4, book.getEdition());
+				ps.setInt(5, book.getQuantity());
+				ps.setInt(6, book.getGenreId());
+				int count = ps.executeUpdate();
+
+				if (count == 1) {
+					status = true;
+				}
 			}
 		} catch (Exception e) {
 			System.out.println(e);
@@ -138,6 +174,9 @@ public class BookDAOImpl implements BookDAO {
 		}
 		return b;
 	}
+	
+	
+
 }
 //select * from book where bookName= 'A' or author='b' or genre='c';....exact match
 //select * from book where bookName like '%A%' or author like'%b%' or genre like'%b%;...partial match

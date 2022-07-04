@@ -1,15 +1,20 @@
 package com.sudha;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import com.sudha.Utilities.LoginStatus;
 
 public class LibraryManager {
 	static Scanner sc = new Scanner(System.in);
-
-	public static void main(String[] args) {
+	public static void main(String[] args) 
+	{
+		BookDAO bookDAO=new BookDAOImpl();
+		SubscriptionDAO subscriptionDAO = new SubscriptionDAOImpl();
+		String bookName = null;
 		int selectedOption = -1;
 		boolean loginAgain = false;
+		LoggedInUser l=new LoggedInUser();
 		System.out.print("Welcome to Lirbrary!");
 		do {
 			// login again - start
@@ -58,15 +63,46 @@ public class LibraryManager {
 					case 2:
 						// librarian function calls - start
 						switch (selectedOption) {
-						case 1: // approve Librarian
-							Operation.showAdminMenu();
+						case 1: // Add Book
+							Operation.addBook(sc,bookName );
 							break;
-						case 2:// reject Librarian
-							Operation.showLibrarianMenu();
+						case 2:// Show all books
+							bookDAO.getAllBooks();
 							break;
-						case 3:// quit
-							Operation.showReaderMenu();
+						case 3:// Edit book
+							Operation.editBook(sc);
 							break;
+						case 4:// Show all users
+							Operation.showAllUsers();
+							break;
+						case 5:// Show all Subscribers
+							subscriptionDAO.ShowAllSubscriptions();
+							break;
+						case 6:// Edit User Details
+							Operation.editUser(sc);
+							break;
+						case 7:// Search book
+							Operation.searchBook(sc);
+							break;
+						case 8:// Search user
+							Operation.searchUser(sc);
+							break;
+						case 9:// Deactivate User
+							Operation.deactivateUser(sc);
+							break;
+						case 10:// Deactivate Book
+							Operation.deleteBook(sc);
+							break;
+						case 11:// Approve subscription
+							Operation.approveSubscription(sc);//need to complete in operation
+							break;
+						case 12:// Approve Borrow
+							Operation.approveBookBorrow(BookBorrow bb, int bookId, int userId,Sc);
+							break;
+						case 13:// Approve Return
+							Operation.showAllUsers();// need to create the method in bookimpl and operation both
+							break;
+						
 						default:
 							System.out.print("\n\n\t Invalid Option selected!");
 							break;
@@ -77,14 +113,32 @@ public class LibraryManager {
 					case 3:
 						// reader function calls - start
 						switch (selectedOption) {
-						case 1: // approve Librarian
-							Operation.showAdminMenu();
+						case 1: // Show Books
+							bookDAO.getAllBooks();
 							break;
-						case 2:// reject Librarian
-							Operation.showLibrarianMenu();
+						case 2://Show my account
+							Operation.showMyAccount(sc,l.getUser.getUserId);//need to fix it
 							break;
-						case 3:// quit
+						case 3:// Change Address
+							Operation.changeAddress(sc, LoggedInUser l)//need to correct.
+							break;
+						case 4:// Search book
+							Operation.searchBook(sc);
+							break;
+						case 5:// Subscription
+							Operation.subscription(sc, User u);//one method is created in operation only
+							break;
+						case 6:// Borrow book
+							Operation.showReaderMenu();//single method in impl
+							break;
+						case 7:// Return Book//no method
 							Operation.showReaderMenu();
+							break;
+						case 8:// Review book//no method
+							Operation.showReaderMenu();
+							break;
+						case 9:// Feedback
+							Operation.showReaderMenu();//no method
 							break;
 						default:
 							System.out.print("\n\n\t Invalid Option selected!");
