@@ -296,7 +296,7 @@ public class Operation {
 		return status;
 	}
 
-	public void approveBookBorrow(BookBorrow bb, int bookId, int userId, Scanner Sc) {
+	public void approveBookBorrow(Scanner Sc) {
 		ArrayList<BorrowedBookDetail> borrowedBookDetailList = bookBorrowDAO.ShowListOfBooksBorrowDetails();
 		// Bookborrow requests pending for approval.
 		for (BorrowedBookDetail bbd : borrowedBookDetailList) {

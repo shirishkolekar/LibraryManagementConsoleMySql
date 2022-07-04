@@ -111,7 +111,7 @@ public class LibraryManager {
 							Operation.approveSubscription(sc);//need to complete in operation
 							break;
 						case 12:// Approve Borrow
-							Operation.approveBookBorrow(BookBorrow bb, int bookId, int userId,Sc);
+							Operation.approveBookBorrow(sc);
 							break;
 						case 13:// Approve Return
 							Operation.showAllUsers();// need to create the method in bookimpl and operation both
