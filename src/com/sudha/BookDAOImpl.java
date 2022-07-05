@@ -174,8 +174,32 @@ public class BookDAOImpl implements BookDAO {
 		}
 		return b;
 	}
-	
-	
+
+	@Override
+	public boolean review(String bookName, int review) {
+		boolean status=false;
+		try {
+			con = DbConnection.getCon();
+			ps = con.prepareStatement("insert into Book(review=?) where bookName=?");
+			ps.setInt(1, review);
+			ps.setString(2,bookName);
+			int count = ps.executeUpdate();
+			if (count == 1) {
+				status = true;
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+			e.printStackTrace();
+		}
+		return status;
+	}
+
+	@Override
+	public boolean approveReview(int bookId, String bookName, int userId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 
 }
 //select * from book where bookName= 'A' or author='b' or genre='c';....exact match

@@ -9,4 +9,7 @@ public interface BookDAO {
 	ArrayList<Book> getAllBooks();
 	Book getBookById(int bookId);
 	boolean isBookAlreadyExists(String bookName);
+	boolean review(String bookName, int review);
+	boolean approveReview(int bookId,String bookName, int userId);
+	
 }

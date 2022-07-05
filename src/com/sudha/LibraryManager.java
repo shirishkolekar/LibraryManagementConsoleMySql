@@ -110,7 +110,7 @@ public class LibraryManager {
 							Operation.approveBookBorrow(sc);
 							break;
 						case 13:// Approve Return
-							Operation.showAllUsers();// need to create the method in bookimpl and operation both
+							Operation.approveReturn(sc, int bookBorrowId);
 							break;
 						
 						default:
@@ -136,19 +136,16 @@ public class LibraryManager {
 							Operation.searchBook(sc);
 							break;
 						case 5:// Subscription
-							Operation.addSubscription(sc,loggedInUser.getUser().getUserId());//one method is created in operation only
+							Operation.addSubscription(sc,loggedInUser.getUser().getUserId());//Need to understand from sir.
 							break;
 						case 6:// Borrow book
-							Operation.showReaderMenu();//single method in impl
+							Operation.borrowBookRequest(loggedInUser.getUser().getUserId());						
 							break;
-						case 7:// Return Book//no method
-							Operation.showReaderMenu();
+						case 7:// Return Book//
+							Operation.returnBook(sc,int bookBorrowId);
 							break;
 						case 8:// Review book//no method
-							Operation.showReaderMenu();
-							break;
-						case 9:// Feedback
-							Operation.showReaderMenu();//no method
+							Operation.review(sc,bookName, int review);// need to check
 							break;
 						default:
 							System.out.print("\n\n\t Invalid Option selected!");

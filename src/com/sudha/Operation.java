@@ -402,4 +402,63 @@ public class Operation implements ProjectConfig {
 			System.out.print("\n\n\t Operation on Subscription failed! Please try again!");
 		}
 	}
+
+	public static void borrowBookRequest(int userId) {
+		if (subscriptionDAO.isUserSubscribed(userId)) {
+			bookBorrowDAO.borrowBook(userId);
+
+		} else {
+			System.out.println("Please subscribe first to avail the services!");
+		}
+		if (bookBorrowDAO.borrowBook(userId)) {
+			System.out.println("Request sent for approval for book borrowed!");
+		} else {
+			System.out.println("Operation failed!");
+		}
+	}
+
+	public static void review(Scanner sc, String bookName, int review) {
+		System.out.print("Enter the book name you want to review : ");
+		bookName = Utilities.getInput();
+
+		System.out.print("Enter your review :");
+		review = sc.nextInt();
+
+		if (bookDAO.review(bookName, review)) {
+			System.out.println("Thanks to review the book!");
+		} else {
+			System.out.println("Operation failed..try again!");
+		}
+	}
+	public static void returnBook(Scanner sc,int bookBorrowId)
+	{
+		System.out.print("Enter the BookBorrow Id you want to return : ");
+		bookBorrowId=sc.nextInt();
+		if(bookBorrowDAO.returnBook(bookBorrowId))
+		{
+			System.out.print("Request sent for approval! ");
+		}
+		else
+		{
+			System.out.print("Operation Failed!");
+		}
+	}
+	
+	public static void approveReturn(Scanner sc, int bookBorrowId)
+	{
+		System.out.println(" List of the books for return approval ");
+		bookBorrowDAO.listOfBooksToBeReturned(null);
+		
+		System.out.print("Enter bookBorrowId you want to approve return of :");
+		bookBorrowId = sc.nextInt();
+		
+		if(bookBorrowDAO.approveReturn(bookBorrowId) 
+		{
+			System.out.print("Return Approved! ");
+		}
+		else
+		{
+			System.out.print("Return Failed!");
+		}
+	}
 }
