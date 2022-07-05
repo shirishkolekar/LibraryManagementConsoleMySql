@@ -9,6 +9,7 @@ public class Book {
 	private int edition;
 	private int quantity;
 	private int genreId;
+	private boolean active;
 
 	public int getBookId() {
 		return bookId;
@@ -66,6 +67,14 @@ public class Book {
 		this.genreId = genreId;
 	}
 
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
 	public Book() {
 		this.bookId = 0;
 		this.bookName = "";
@@ -74,9 +83,11 @@ public class Book {
 		this.edition = 0;
 		this.quantity = 0;
 		this.genreId = 0;
+		this.active = false;
 	}
 
-	public Book(int bookId, String bookName, String author, int review, int edition, int quantity, int genreId) {
+	public Book(int bookId, String bookName, String author, int review, int edition, int quantity, int genreId,
+			boolean active) {
 		this.bookId = bookId;
 		this.bookName = bookName;
 		this.author = author;
@@ -84,5 +95,6 @@ public class Book {
 		this.edition = edition;
 		this.quantity = quantity;
 		this.genreId = genreId;
+		this.active = active;
 	}
 }

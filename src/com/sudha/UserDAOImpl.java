@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import com.sudha.Utilities.LoginStatus;
@@ -36,10 +37,15 @@ public class UserDAOImpl implements UserDAO {
 			if (count == 1) {
 				status = true;
 			}
-			con.close();
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return status;
 	}
@@ -69,8 +75,13 @@ public class UserDAOImpl implements UserDAO {
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
-
 		return status;
 	}
 
@@ -91,6 +102,12 @@ public class UserDAOImpl implements UserDAO {
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return status;
 	}
@@ -126,6 +143,12 @@ public class UserDAOImpl implements UserDAO {
 		} catch (Exception ex) {
 			System.out.println(ex);
 			ex.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return users;
 	}
@@ -146,16 +169,21 @@ public class UserDAOImpl implements UserDAO {
 				u.setAddress(rs.getString("address"));
 				u.setRegistrationDate(rs.getDate("registrationDate").toLocalDate());
 				u.setRoleId(rs.getInt("roleId"));
-				// u.setUserStatus(rs.getString("userStatus"));
-				con.close();
 			}
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return u;
 	}
 
+// correction needed
 	@Override
 	public User searchUser(int searchInput) {
 		User u = null;
@@ -183,11 +211,16 @@ public class UserDAOImpl implements UserDAO {
 				u.setRegistrationDate(rs.getDate("registrationDate").toLocalDate());
 				u.setRoleId(rs.getInt("roleId"));
 				u.setUserStatus(rs.getBoolean("userStatus"));
-				con.close();
 			}
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return u;
 	}
@@ -204,10 +237,15 @@ public class UserDAOImpl implements UserDAO {
 			if (rs.next()) {
 				exists = true;
 			}
-			con.close();
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return exists;
 	}
@@ -242,10 +280,15 @@ public class UserDAOImpl implements UserDAO {
 			} else {
 				loggedInUser.setLoginStatus(LoginStatus.UserNotFound);
 			}
-			con.close();
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return loggedInUser;
 	}
@@ -265,6 +308,12 @@ public class UserDAOImpl implements UserDAO {
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return status;
 	}

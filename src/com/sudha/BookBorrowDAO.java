@@ -3,17 +3,23 @@ package com.sudha;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public interface BookBorrowDAO{
+public interface BookBorrowDAO {
 
-	boolean borrowBook(int userId);
-	boolean approveBookBorrow(BookBorrow bb,int userId, int bookId, Scanner Sc);
+	boolean borrowBook(int userId, int bookId);
+
+	boolean approveBookBorrow(int bookBorrowId);
+	
 	boolean returnBook(int bookBorrowId);
+
 	boolean approveReturn(int bookBorrowId);
+
 	ArrayList<BookBorrow> ShowListOfBooksBorrowed();
+
 	ArrayList<BorrowedBookDetail> ShowListOfBooksBorrowDetails();
+
 	ArrayList<BookBorrow> listOfBooksToBeReturned(BookBorrow bookBorrow);
-	
-	
+
+	ArrayList<BorrowedBookDetail> ShowListOfBooksBorrowedByUser(int userId);
+
+	boolean deleteBookBorrow(int bookBorrowId);
 }
-
-

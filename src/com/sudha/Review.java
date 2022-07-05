@@ -7,6 +7,7 @@ public class Review {
 	int bookId;
 	int stars;
 	String comment;
+	boolean approved;
 
 	public int getReviewId() {
 		return reviewId;
@@ -48,21 +49,29 @@ public class Review {
 		this.comment = comment;
 	}
 
+	public boolean isApproved() {
+		return approved;
+	}
+
+	public void setApproved(boolean approved) {
+		this.approved = approved;
+	}
+
 	public Review() {
 		this.reviewId = 0;
 		this.userId = 0;
 		this.bookId = 0;
 		this.stars = 0;
 		this.comment = "";
+		this.approved = false;
 	}
 
-	public Review(int reviewId, int userId, int bookId, int stars, String comment) {
+	public Review(int reviewId, int userId, int bookId, int stars, String comment, boolean approved) {
 		this.reviewId = reviewId;
 		this.userId = userId;
 		this.bookId = bookId;
 		this.stars = stars;
 		this.comment = comment;
+		this.approved = approved;
 	}
-
-	}
-
+}

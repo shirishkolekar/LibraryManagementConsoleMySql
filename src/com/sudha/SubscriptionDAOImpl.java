@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -39,6 +40,12 @@ public class SubscriptionDAOImpl implements SubscriptionDAO, ProjectConfig {
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return subscriptions;
 	}
@@ -80,8 +87,13 @@ public class SubscriptionDAOImpl implements SubscriptionDAO, ProjectConfig {
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
-
 		return status;
 	}
 
@@ -106,6 +118,12 @@ public class SubscriptionDAOImpl implements SubscriptionDAO, ProjectConfig {
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return subscription;
 	}
@@ -126,6 +144,12 @@ public class SubscriptionDAOImpl implements SubscriptionDAO, ProjectConfig {
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return exists;
 	}
@@ -159,6 +183,12 @@ public class SubscriptionDAOImpl implements SubscriptionDAO, ProjectConfig {
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return subscriptions;
 	}
@@ -182,6 +212,12 @@ public class SubscriptionDAOImpl implements SubscriptionDAO, ProjectConfig {
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return status;
 	}
@@ -191,7 +227,7 @@ public class SubscriptionDAOImpl implements SubscriptionDAO, ProjectConfig {
 		boolean status = false;
 		con = DbConnection.getCon();
 		try {
-
+			con = DbConnection.getCon();
 			ps = con.prepareStatement(
 					"insert into Subscription(userId, amount, dateOfSubscription, validity, approved) values(?,?,?,?,?)");
 			ps.setInt(1, userId);
@@ -207,6 +243,12 @@ public class SubscriptionDAOImpl implements SubscriptionDAO, ProjectConfig {
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return status;
 	}

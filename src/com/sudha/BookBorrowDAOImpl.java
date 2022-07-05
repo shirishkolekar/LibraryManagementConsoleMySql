@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -20,27 +21,27 @@ public class BookBorrowDAOImpl implements BookBorrowDAO {
 
 	@Override
 
-	public boolean borrowBook(int userId) {
+	public boolean borrowBook(int userId, int bookId) {
 		boolean status = false;
-		BookBorrow bookborrow = new BookBorrow();
 		try {
-			ps = con.prepareStatement(
-					"insert into BookBorrow(userId,bookId,borrowDate,returnDate,borrowApproved)values(?,?,?,?,?)");
-
-			ps.setInt(1, bookborrow.getUserId());
-			ps.setLong(2, bookborrow.getBookId());
-			ps.setDate(3, Date.valueOf(bookborrow.getBorrowDate()));
-			ps.setDate(4, Date.valueOf(bookborrow.getReturnDate()));
-			ps.setBoolean(5, bookborrow.isBorrowApproved());
-			booksBorrow.add(bookborrow);
+			con = DbConnection.getCon();
+			ps = con.prepareStatement("insert into BookBorrow(userId,bookId,borrowDate)values(?,?,?)");
+			ps.setInt(1, userId);
+			ps.setLong(2, bookId);
+			ps.setDate(3, Date.valueOf(LocalDate.now()));
 			int count = ps.executeUpdate();
-
 			if (count == 1) {
 				status = true;
 			}
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return status;
 	}
@@ -52,7 +53,7 @@ public class BookBorrowDAOImpl implements BookBorrowDAO {
 		ArrayList<BookBorrow> borrowedBooks = new ArrayList<BookBorrow>();
 		try {
 			con = DbConnection.getCon();
-			ps = con.prepareStatement("select* from BookBorrow");
+			ps = con.prepareStatement("select * from BookBorrow");
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
@@ -69,6 +70,12 @@ public class BookBorrowDAOImpl implements BookBorrowDAO {
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return borrowedBooks;
 	}
@@ -97,65 +104,61 @@ public class BookBorrowDAOImpl implements BookBorrowDAO {
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return booksToBeApproved;
 	}
 
-//			System.out.print("Do you want to approve (y/n) : ");
-//			char input=sc.next().charAt(0);
-//			
-//			if(input=='Y' || input=='y')//for approval
-	public boolean approveBookBorrow(int bookBorrowId , int userId) {
+	public boolean approveBookBorrow(int bookBorrowId) {
 		boolean approvalStatus = false;
 		try {
-			//Subscription subscription = subscriptionDAO.ShowSubscriptionByUserId(userId);
-			// to check subscription validity to allow borrow.
-			//if (subscription.getValidity().isAfter(LocalDate.now())) {
-				ps1 = con.prepareStatement("update BookBorrow set borrowApproved=? where bookBorrowId=?");
-
-				ps.setBoolean(1, true);
-				ps.setInt(2, bookBorrowId);
-				int count = ps.executeUpdate();
-
-				if (count == 1) {
-					approvalStatus = true;// Have to complete the method.
-				}
-			//} else// if subscription validity is over
-//			{
-//				subscriptionDAO.deleteSubscription(subscription.getSubscriptionId());
-//				System.out.println("Subscription expired..Please renew to avail the facility!");
-//			}
-
-//			 	else//for rejection
-//			{
-//				booksBorrow.remove(bb);
-//				System.out.print("Payment failed. Please try again!");
-//			}
+			con = DbConnection.getCon();
+			ps = con.prepareStatement("update BookBorrow set borrowApproved=1 where bookBorrowId=?");
+			ps.setInt(1, bookBorrowId);
+			int count = ps.executeUpdate();
+			if (count == 1) {
+				approvalStatus = true;
+			}
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
-
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return approvalStatus;
 	}
 
+	// reader is returning book
 	@Override
 	public boolean returnBook(int bookBorrowId) {
 		boolean returnStatus = false;
 		try {
 			con = DbConnection.getCon();
-			ps = con.prepareStatement("update BookBorrow set returnApproved=1 where bookBorrowId=? ");
-			// ps.setDate(1, Date.valueOf(bookBorrow.getReturnDate().now()));
-			ps.setBit(1, 1);// need to check from sir.
+			ps = con.prepareStatement("update BookBorrow set returnDate = ? where bookBorrowId = ?");
+			ps.setDate(1, Date.valueOf(LocalDate.now()));
 			ps.setInt(2, bookBorrowId);
 			int count = ps.executeUpdate();
-
 			if (count == 1) {
 				returnStatus = true;
 			}
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return returnStatus;
 	}
@@ -176,6 +179,12 @@ public class BookBorrowDAOImpl implements BookBorrowDAO {
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return listForReturnApproval;
 	}
@@ -188,7 +197,6 @@ public class BookBorrowDAOImpl implements BookBorrowDAO {
 			ps = con.prepareStatement("update BookBorrow set returnDate=? where bookBorrowId=? ");
 			ps.setDate(1, Date.valueOf(LocalDate.now()));
 			ps.setInt(2, bookBorrowId);
-
 			int count = ps.executeUpdate();
 
 			if (count == 1) {
@@ -197,6 +205,62 @@ public class BookBorrowDAOImpl implements BookBorrowDAO {
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
+		}
+		return status;
+	}
+
+	@Override
+	public ArrayList<BorrowedBookDetail> ShowListOfBooksBorrowedByUser(int userId) {
+		ArrayList<BorrowedBookDetail> booksBorrowed = new ArrayList<BorrowedBookDetail>();
+		BorrowedBookDetail bb = null;
+		try {
+			con = DbConnection.getCon();
+			ps = con.prepareStatement(
+					"select bookborrow.bookborrowId, bookborrow.bookId, book.bookName from bookborrow inner Join "
+							+ "book On BookBorrow.bookId = Book.bookId where userId=?");
+			ps.setInt(1, userId);
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				bb = new BorrowedBookDetail();
+				bb.setBookBorrowId(rs.getInt("bookBorrowId"));
+				bb.setBookName(rs.getString("BookName"));
+				bb.setUserId(rs.getInt("userId"));
+				booksBorrowed.add(bb);
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return booksBorrowed;
+	}
+
+	@Override
+	public boolean deleteBookBorrow(int bookBorrowId) {
+		boolean status = false;
+		try {
+			con = DbConnection.getCon();
+			ps = con.prepareStatement("delete from BookBorrow where bookBorrowId=?");
+			ps.setInt(1, bookBorrowId);
+			int count = ps.executeUpdate();
+			if (count == 1) {
+				status = true;
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return status;
 	}

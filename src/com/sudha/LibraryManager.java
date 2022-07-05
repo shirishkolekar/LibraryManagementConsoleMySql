@@ -110,7 +110,7 @@ public class LibraryManager {
 							Operation.approveBookBorrow(sc);
 							break;
 						case 13:// Approve Return
-							Operation.approveReturn(sc, int bookBorrowId);
+							Operation.approveReturn(sc);
 							break;
 						
 						default:
@@ -124,7 +124,7 @@ public class LibraryManager {
 						// reader function calls - start
 						switch (selectedOption) {
 						case 1: // Show Books
-							bookDAO.getAllBooks();
+							Operation.showBooks();
 							break;
 						case 2://Show my account							
 							Operation.showMyAccount(sc,loggedInUser.getUser().getUserId());
@@ -139,13 +139,13 @@ public class LibraryManager {
 							Operation.addSubscription(sc,loggedInUser.getUser().getUserId());//Need to understand from sir.
 							break;
 						case 6:// Borrow book
-							Operation.borrowBookRequest(loggedInUser.getUser().getUserId());						
+							Operation.borrowBookRequest(sc,loggedInUser.getUser().getUserId());						
 							break;
 						case 7:// Return Book//
-							Operation.returnBook(sc,int bookBorrowId);
+							Operation.returnBook(sc,loggedInUser.getUser().getUserId());
 							break;
 						case 8:// Review book//no method
-							Operation.review(sc,bookName, int review);// need to check
+							//Operation.review(sc,bookName,review);// need to check
 							break;
 						default:
 							System.out.print("\n\n\t Invalid Option selected!");
@@ -172,91 +172,3 @@ public class LibraryManager {
 		sc.close();
 	}
 }
-
-//System.out.println("1- Admin Login  2- Reader Login");
-//int input=sc.nextInt();
-//menuloop1:	
-//if(input==1)
-//	{
-//		do
-//		{
-//		
-//	
-//			if(adminUserIdInput.equals(adminUserId)&& adminPassInput==adminPass)
-//			{
-//				isCorrectLogin=true;
-//				Operation.loginAdmin();				
-//				int librairanOperation = sc.nextInt();
-//
-//				switch (librairanOperation)
-//				{
-//				case 1: // Display Books
-//					Operation.showBooks();
-//				break;
-//
-//				case 2:// Add Book
-//					Operation.addBook(sc);
-//				break;
-//
-//				case 3:// delete Book
-//					Operation.deleteBook(sc);
-//				break;
-//
-//				case 4:// Get Book details by BookId
-//					Operation.getBookById(sc);
-//				break;
-//
-//				case 5:// Edit Book
-//					Operation.editBook(sc);
-//				break;
-//				
-//				case 6: // Display Users
-//					Operation.showAllUsers();
-//				break;
-//
-//				case 7:// Add User
-//					Operation.addUser(sc);
-//				break;
-//
-//				case 8:// Deactivate User
-//					Operation.deactivateUser(sc);
-//				break;
-//
-//				case 9:// display user details by userId
-//					Operation.getUserById(sc);
-//				break;
-//
-//				case 10:// Edit Book
-//					Operation.editUser(sc);
-//				break;
-//
-//				default: 
-//					System.out.println("Invalid input!");
-//				break;
-//
-//			}// Switch case closed
-//		 }
-//		else
-//		{
-//			isCorrectLogin=false;
-//		}
-//	}
-//	while(isCorrectLogin=false);		
-//			
-//		System.out.println("Do you want more operations? (y/n):");
-//		char moreOps=sc.next().charAt(0);
-//		if(moreOps=='y'|| moreOps=='Y')
-//		{
-//			Operation.loginAdmin();	
-//		}
-//		else
-//		{
-//			break menuloop1;
-//		}
-//			
-//	}//admin closed
-//	 
-//else//reader login
-//{
-//	System.out.print("1 - Login  2- sign up/n"+ "Choose one option : ");
-//}

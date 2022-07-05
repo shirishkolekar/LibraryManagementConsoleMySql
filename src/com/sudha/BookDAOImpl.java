@@ -3,6 +3,7 @@ package com.sudha;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class BookDAOImpl implements BookDAO {
@@ -30,10 +31,15 @@ public class BookDAOImpl implements BookDAO {
 				b.setGenreId(rs.getInt("genreId"));
 				books.add(b);
 			}
-			con.close();
 		} catch (Exception ex) {
 			System.out.println(ex);
 			ex.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return books;
 	}
@@ -52,16 +58,21 @@ public class BookDAOImpl implements BookDAO {
 		} catch (Exception ex) {
 			System.out.println(ex);
 			ex.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
-
 		return status;
 	}
 
 	@Override
 	public boolean addBook(Book book) {
 		boolean status = false;
-		con = DbConnection.getCon();
 		try {
+			con = DbConnection.getCon();
 			if (isBookAlreadyExists(book.getBookName())) {
 				ps = con.prepareStatement("select quantity where bookName=?");
 				ps.setString(1, book.getBookName());
@@ -96,6 +107,12 @@ public class BookDAOImpl implements BookDAO {
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return status;
 	}
@@ -124,8 +141,13 @@ public class BookDAOImpl implements BookDAO {
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
-
 		return status;
 	}
 
@@ -134,7 +156,7 @@ public class BookDAOImpl implements BookDAO {
 		boolean status = false;
 		try {
 			con = DbConnection.getCon();
-			ps = con.prepareStatement("delete from books where bookId = ?");
+			ps = con.prepareStatement("update books set active = 0 where bookId = ?");
 			ps.setInt(1, bookId);
 			int count = ps.executeUpdate();
 			if (count == 1) {
@@ -143,8 +165,13 @@ public class BookDAOImpl implements BookDAO {
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
-
 		return status;
 	}
 
@@ -167,40 +194,45 @@ public class BookDAOImpl implements BookDAO {
 				b.setQuantity(rs.getInt("quantity"));
 				b.setGenreId(rs.getInt("genreId"));
 			}
-			con.close();
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return b;
 	}
 
-	@Override
-	public boolean review(String bookName, int review) {
-		boolean status=false;
-		try {
-			con = DbConnection.getCon();
-			ps = con.prepareStatement("insert into Book(review=?) where bookName=?");
-			ps.setInt(1, review);
-			ps.setString(2,bookName);
-			int count = ps.executeUpdate();
-			if (count == 1) {
-				status = true;
-			}
-		} catch (Exception e) {
-			System.out.println(e);
-			e.printStackTrace();
-		}
-		return status;
-	}
-
-	@Override
-	public boolean approveReview(int bookId, String bookName, int userId) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-
+//	@Override
+//	public boolean review(String bookName, int review) {
+//		boolean status = false;
+//		try {
+//			con = DbConnection.getCon();
+//			ps = con.prepareStatement("insert into Book(review=?) where bookName=?");
+//			ps.setInt(1, review);
+//			ps.setString(2, bookName);
+//			int count = ps.executeUpdate();
+//			if (count == 1) {
+//				status = true;
+//			}
+//		} catch (Exception e) {
+//			System.out.println(e);
+//			e.printStackTrace();
+//		}
+//		finally
+//		{
+//			try {
+//				con.close();
+//			} catch (SQLException e) {				
+//				e.printStackTrace();
+//			}	
+//		}
+//		return status;
+//	}
 }
 //select * from book where bookName= 'A' or author='b' or genre='c';....exact match
 //select * from book where bookName like '%A%' or author like'%b%' or genre like'%b%;...partial match

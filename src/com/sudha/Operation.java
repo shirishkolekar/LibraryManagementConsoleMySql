@@ -139,6 +139,8 @@ public class Operation implements ProjectConfig {
 		Book b = bookDAO.getBookById(bookId);
 		System.out.println(b.getBookId() + " " + b.getBookName() + " " + b.getAuthor() + " " + b.getReview() + " "
 				+ b.getEdition() + " " + b.getQuantity() + " " + b.getGenreId());
+
+		// show reviews of this book from reviews table filter by bookid
 	}
 
 	public static void getUserById(Scanner sc) {
@@ -284,37 +286,35 @@ public class Operation implements ProjectConfig {
 		}
 	}
 
-	public static void approveBookBorrow(Scanner sc,int bookBorrow, int bookId, int userId) {
-		boolean approvalStatus = false;
+	public static void approveBookBorrow(Scanner sc) {
+
 		ArrayList<BorrowedBookDetail> borrowedBookDetailList = bookBorrowDAO.ShowListOfBooksBorrowDetails();
-		// Bookborrow requests pending for approval.
-		System.out.println("BookBorrowId\t"+"BookId\t"+"BookName");
+		System.out.println("BookBorrowId\t" + "BookId\t" + "BookName");
 		for (BorrowedBookDetail bbd : borrowedBookDetailList) {
-			System.out.println(bbd.getBookBorrowId()+" "+bbd.getBookId()+bbd.getUserId()" "+bbd.getBookName()); 
+			System.out
+					.println(bbd.getBookBorrowId() + " " + bbd.getBookId() + bbd.getUserId() + " " + bbd.getBookName());
 		}
 		System.out.print("Enter BookBorrow Id to for approval :");
-		bookBorrow = sc.nextInt();
+		int bookBorrowId = sc.nextInt();
+		int userId = borrowedBookDetailList.stream().filter(bbd -> bbd.getBookBorrowId() == bookBorrowId).findAny()
+				.orElse(null).getUserId();
 
-			Subscription subscription = subscriptionDAO.ShowSubscriptionByUserId(userId);
-			System.out.println(subscription);
-			// to check subscription validity to allow borrow.
-			if (subscription.getValidity().isAfter(LocalDate.now())) {
-				bookborrowDAO.approveBookBorrow(int bookBorrowId , int bookId, int userId)			} else// if subscription validity is over
-			{
-				subscriptionDAO.deleteSubscription(subscription.getSubscriptionId());
-				System.out.println("Subscription expired..Please renew to avail the facility!");
+		Subscription subscription = subscriptionDAO.ShowSubscriptionByUserId(userId);
+		// to check subscription validity to allow borrow.
+		if (subscription.getValidity().isAfter(LocalDate.now())) {
+			if (bookBorrowDAO.approveBookBorrow(bookBorrowId)) {
+				System.out.println("\n\n\t book borrow approved!");
+			} else {
+				System.out.println("\n\n\t failed to approve book borrow! Please try again!");
 			}
 
-//			 	else//for rejection
-//			{
-//				booksBorrow.remove(bb);
-//				System.out.print("Payment failed. Please try again!");
-//			}
-		} catch (Exception e) {
-			System.out.println(e);
-			e.printStackTrace();
+		} else {
+			// subscription validity is over
+			if (bookBorrowDAO.deleteBookBorrow(bookBorrowId)) {
+				System.out.println(
+						"\n\n\t Reader's Subscription expired! Please ask the reader for renewal to avail the facility!");
+			}
 		}
-		// return approvalStatus;
 	}
 
 	public static void approveRejectLibrarian(Scanner sc, boolean toApprove) {
@@ -394,61 +394,62 @@ public class Operation implements ProjectConfig {
 		}
 	}
 
-	public static void borrowBookRequest(int userId) {
-		if (subscriptionDAO.isUserSubscribed(userId)) {
-			bookBorrowDAO.borrowBook(userId);
+	public static void borrowBookRequest(Scanner sc, int userId) {
 
+		if (subscriptionDAO.isUserSubscribed(userId)) {
+			// Subscription valid then proceed
+			System.out.println("Enter bookid you want to borrow!");
+			int bookId = sc.nextInt();
+
+			if (bookBorrowDAO.borrowBook(userId, bookId)) {
+				System.out.println("Request sent for approval for book borrowed!");
+			} else {
+				System.out.println("Operation failed!");
+			}
 		} else {
 			System.out.println("Please subscribe first to avail the services!");
-		}
-		if (bookBorrowDAO.borrowBook(userId)) {
-			System.out.println("Request sent for approval for book borrowed!");
-		} else {
-			System.out.println("Operation failed!");
 		}
 	}
 
 	public static void review(Scanner sc, String bookName, int review) {
-		System.out.print("Enter the book name you want to review : ");
-		bookName = Utilities.getInput();
-
-		System.out.print("Enter your review :");
-		review = sc.nextInt();
-
-		if (bookDAO.review(bookName, review)) {
-			System.out.println("Thanks to review the book!");
-		} else {
-			System.out.println("Operation failed..try again!");
-		}
+//		System.out.print("Enter the book name you want to review : ");
+//		bookName = Utilities.getInput();
+//
+//		System.out.print("Enter your review :");
+//		review = sc.nextInt();
+//
+//		if (bookDAO.review(bookName, review)) {
+//			System.out.println("Thanks to review the book!");
+//		} else {
+//			System.out.println("Operation failed..try again!");
+//		}
 	}
-	public static void returnBook(Scanner sc,int bookBorrowId)
-	{
-		System.out.print("Enter the BookBorrow Id you want to return : ");
-		bookBorrowId=sc.nextInt();
-		if(bookBorrowDAO.returnBook(bookBorrowId))
-		{
-			System.out.print("Request sent for approval! ");
+
+	public static void returnBook(Scanner sc, int userId) {
+		// show borrowed books of loggedin User
+		ArrayList<BorrowedBookDetail> booksBorrowed = bookBorrowDAO.ShowListOfBooksBorrowedByUser(userId);
+		for (BorrowedBookDetail bbd : booksBorrowed) {
+			System.out.println(bbd.getBookBorrowId() + " " + bbd.getBookName());
 		}
-		else
-		{
+		System.out.print("Enter the BookBorrow Id you want to return : ");
+		int bookBorrowId = sc.nextInt();
+		if (bookBorrowDAO.returnBook(bookBorrowId)) {
+			System.out.print("Request sent for approval! ");
+		} else {
 			System.out.print("Operation Failed!");
 		}
 	}
-	
-	public static void approveReturn(Scanner sc, int bookBorrowId)
-	{
-		System.out.println(" List of the books for return approval ");
+
+	public static void approveReturn(Scanner sc) {
+		System.out.println("List of the books for return approval ");
 		bookBorrowDAO.listOfBooksToBeReturned(null);
-		
+
 		System.out.print("Enter bookBorrowId you want to approve return of :");
-		bookBorrowId = sc.nextInt();
-		
-		if(bookBorrowDAO.approveReturn(bookBorrowId) 
-		{
+		int bookBorrowId = sc.nextInt();
+
+		if (bookBorrowDAO.approveReturn(bookBorrowId)) {
 			System.out.print("Return Approved! ");
-		}
-		else
-		{
+		} else {
 			System.out.print("Return Failed!");
 		}
 	}
