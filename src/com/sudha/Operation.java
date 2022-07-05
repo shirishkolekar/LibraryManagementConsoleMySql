@@ -65,6 +65,14 @@ public class Operation implements ProjectConfig {
 		}
 	}
 
+	public static void showAllSubscriptions() {
+		ArrayList<Subscription> subscriptions = subscriptionDAO.ShowAllSubscriptions();
+		for (Subscription s : subscriptions) {
+			System.out.println(s.getSubscriptionId() + " " + s.getUserId() + " " + s.getDateOfSubscription() + " "
+					+ s.getValidity() + " " + s.getAmount());
+		}
+	}
+
 	public static void addBook(Scanner sc, String bookName) {
 		System.out.println("Enter the book name you want to add : ");
 		bookName = sc.next();
@@ -133,6 +141,7 @@ public class Operation implements ProjectConfig {
 		}
 	}
 
+// method need to be corrected
 	public static void searchBook(Scanner sc) {
 		System.out.print("Enter the book Id you want to display : ");
 		int bookId = sc.nextInt();

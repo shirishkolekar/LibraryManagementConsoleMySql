@@ -7,9 +7,9 @@ import com.sudha.Utilities.LoginStatus;
 
 public class LibraryManager {
 	static Scanner sc = new Scanner(System.in);
-	public static void main(String[] args) 
-	{
-		BookDAO bookDAO=new BookDAOImpl();
+
+	public static void main(String[] args) {
+		BookDAO bookDAO = new BookDAOImpl();
 		SubscriptionDAO subscriptionDAO = new SubscriptionDAOImpl();
 		String bookName = null;
 		int selectedOption = -1;
@@ -74,10 +74,10 @@ public class LibraryManager {
 						// librarian function calls - start
 						switch (selectedOption) {
 						case 1: // Add Book
-							Operation.addBook(sc,bookName );
+							Operation.addBook(sc, bookName);
 							break;
 						case 2:// Show all books
-							bookDAO.getAllBooks();
+							Operation.showBooks();
 							break;
 						case 3:// Edit book
 							Operation.editBook(sc);
@@ -86,7 +86,7 @@ public class LibraryManager {
 							Operation.showAllUsers();
 							break;
 						case 5:// Show all Subscribers
-							subscriptionDAO.ShowAllSubscriptions();
+							Operation.showAllSubscriptions();
 							break;
 						case 6:// Edit User Details
 							Operation.editUser(sc);
@@ -112,7 +112,7 @@ public class LibraryManager {
 						case 13:// Approve Return
 							Operation.approveReturn(sc);
 							break;
-						
+
 						default:
 							System.out.print("\n\n\t Invalid Option selected!");
 							break;
@@ -126,8 +126,8 @@ public class LibraryManager {
 						case 1: // Show Books
 							Operation.showBooks();
 							break;
-						case 2://Show my account							
-							Operation.showMyAccount(sc,loggedInUser.getUser().getUserId());
+						case 2:// Show my account
+							Operation.showMyAccount(sc, loggedInUser.getUser().getUserId());
 							break;
 						case 3:// Change Address
 							Operation.changeAddress(sc, loggedInUser.getUser().getUserId());
@@ -136,16 +136,17 @@ public class LibraryManager {
 							Operation.searchBook(sc);
 							break;
 						case 5:// Subscription
-							Operation.addSubscription(sc,loggedInUser.getUser().getUserId());//Need to understand from sir.
+							Operation.addSubscription(sc, loggedInUser.getUser().getUserId());// Need to understand from
+																								// sir.
 							break;
 						case 6:// Borrow book
-							Operation.borrowBookRequest(sc,loggedInUser.getUser().getUserId());						
+							Operation.borrowBookRequest(sc, loggedInUser.getUser().getUserId());
 							break;
 						case 7:// Return Book//
-							Operation.returnBook(sc,loggedInUser.getUser().getUserId());
+							Operation.returnBook(sc, loggedInUser.getUser().getUserId());
 							break;
 						case 8:// Review book//no method
-							//Operation.review(sc,bookName,review);// need to check
+								// Operation.review(sc,bookName,review);// need to check
 							break;
 						default:
 							System.out.print("\n\n\t Invalid Option selected!");
