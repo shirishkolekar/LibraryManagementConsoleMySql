@@ -284,31 +284,22 @@ public class Operation implements ProjectConfig {
 		}
 	}
 
-	public static void approveBookBorrow(Scanner Sc) {
+	public static void approveBookBorrow(Scanner sc,int bookBorrow, int bookId, int userId) {
+		boolean approvalStatus = false;
 		ArrayList<BorrowedBookDetail> borrowedBookDetailList = bookBorrowDAO.ShowListOfBooksBorrowDetails();
 		// Bookborrow requests pending for approval.
+		System.out.println("BookBorrowId\t"+"BookId\t"+"BookName");
 		for (BorrowedBookDetail bbd : borrowedBookDetailList) {
-			// showAllProperties for each object.
+			System.out.println(bbd.getBookBorrowId()+" "+bbd.getBookId()+bbd.getUserId()" "+bbd.getBookName()); 
 		}
-		// select bookborrow id to approve
-		// bookborrow idInputread
-//		bookBorrowDAO.approveBookBorrow(bookBorrowId);
+		System.out.print("Enter BookBorrow Id to for approval :");
+		bookBorrow = sc.nextInt();
 
-		boolean approvalStatus = false;
-		try {
 			Subscription subscription = subscriptionDAO.ShowSubscriptionByUserId(userId);
+			System.out.println(subscription);
 			// to check subscription validity to allow borrow.
 			if (subscription.getValidity().isAfter(LocalDate.now())) {
-				ps1 = con.prepareStatement("update BookBorrow set borrowApproved=? where bookId=?");
-
-				ps.setBoolean(1, true);
-				ps.setInt(2, bookId);
-				int count = ps.executeUpdate();
-
-				if (count == 1) {
-					approvalStatus = true;// Have to complete the method.
-				}
-			} else// if subscription validity is over
+				bookborrowDAO.approveBookBorrow(int bookBorrowId , int bookId, int userId)			} else// if subscription validity is over
 			{
 				subscriptionDAO.deleteSubscription(subscription.getSubscriptionId());
 				System.out.println("Subscription expired..Please renew to avail the facility!");

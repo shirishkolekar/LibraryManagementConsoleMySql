@@ -105,26 +105,26 @@ public class BookBorrowDAOImpl implements BookBorrowDAO {
 //			char input=sc.next().charAt(0);
 //			
 //			if(input=='Y' || input=='y')//for approval
-	public boolean approveBookBorrow(BookBorrow bb, int bookId, int userId, Scanner Sc) {
+	public boolean approveBookBorrow(int bookBorrowId , int userId) {
 		boolean approvalStatus = false;
 		try {
-			Subscription subscription = subscriptionDAO.ShowSubscriptionByUserId(userId);
+			//Subscription subscription = subscriptionDAO.ShowSubscriptionByUserId(userId);
 			// to check subscription validity to allow borrow.
-			if (subscription.getValidity().isAfter(LocalDate.now())) {
-				ps1 = con.prepareStatement("update BookBorrow set borrowApproved=? where bookId=?");
+			//if (subscription.getValidity().isAfter(LocalDate.now())) {
+				ps1 = con.prepareStatement("update BookBorrow set borrowApproved=? where bookBorrowId=?");
 
 				ps.setBoolean(1, true);
-				ps.setInt(2, bookId);
+				ps.setInt(2, bookBorrowId);
 				int count = ps.executeUpdate();
 
 				if (count == 1) {
 					approvalStatus = true;// Have to complete the method.
 				}
-			} else// if subscription validity is over
-			{
-				subscriptionDAO.deleteSubscription(subscription.getSubscriptionId());
-				System.out.println("Subscription expired..Please renew to avail the facility!");
-			}
+			//} else// if subscription validity is over
+//			{
+//				subscriptionDAO.deleteSubscription(subscription.getSubscriptionId());
+//				System.out.println("Subscription expired..Please renew to avail the facility!");
+//			}
 
 //			 	else//for rejection
 //			{
