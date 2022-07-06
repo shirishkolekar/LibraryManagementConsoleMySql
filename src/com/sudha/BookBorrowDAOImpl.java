@@ -197,17 +197,48 @@ public class BookBorrowDAOImpl implements BookBorrowDAO {
 		try {
 			con = DbConnection.getCon();
 			ps = con.prepareStatement("update bookBorrow set returnDate=? where bookBorrowId=? ");
-			ps = con.prepareStatement("update BorrowedBookDetail set quantity=quantity+1 where bookBorrowId=? ");
 			ps.setDate(1, Date.valueOf(LocalDate.now()));
 			ps.setInt(2, bookBorrowId);
 			int count = ps.executeUpdate();
-
 			if (count == 1) {
 				status = true;
 			}
+			count = 0;
+			// get bookid
+			int bookId = 0;
+			ps = con.prepareStatement("select bookId from bookBorrow where bookBorrowId=? ");
+			ps.setInt(1, bookBorrowId);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				bookId = rs.getInt("bookId");
+			}
+			// get current quantity for book
+			int quantity = 0;
+			ps = con.prepareStatement("select quantity from Books where bookId=? ");
+			ps.setInt(1, bookId);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				quantity = rs.getInt("quantity");
+			}
+			// update new quantity
+			count = 0;
+			ps = con.prepareStatement("update Books set quantity=? where bookId=? ");
+			ps.setInt(1, quantity + 1);
+			ps.setInt(2, bookId);
+			count = ps.executeUpdate();
+			if (count == 1) {
+				status = true;
+			}
+
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return status;
 	}
