@@ -23,26 +23,18 @@ values('Self-help'),('Fiction'),('Educational'),('Biography'),('Bestselling'),('
 select * from Genres;
 
 create table Books(
-bookId int auto_increment primary key, bookName varchar(50),author varchar(50),review int,edition int,quantity int,genreId int,
+bookId int auto_increment primary key, bookName varchar(50),author varchar(50),review int,edition int,quantity int,genreId int, active bit,
 foreign key(genreId) references Genres(genreId)
 );
-insert into Books(bookName, author, review, edition, quantity, genreId) values('Atomic Habit', 'Gery Chapman', 4, 2011, 8, 1);
+insert into Books(bookName, author, review, edition, quantity, genreId,active) values('Atomic Habit', 'Gery Chapman', 4, 2011, 8, 1,1);
 -- update book set bookName = 'Atomic Habit2',author='Gery Chapman2',review=5,edition=2010,quantity=10,genre='Self-help2' where bookId = 1;
 select * from Books;
-
-create table CustomerFeedback(
-customerFeedbackId int auto_increment primary key, userId int, comments varchar(500), feedbackDate date, isApproved bit, 
-bookid int, review int,
-foreign key(userId) references Users(userId),foreign key(bookid) references Books(bookid)
-);
-
-select * from CustomerFeedback;
 
 create table BookBorrow( bookBorrowId int auto_increment primary key,
 userId int, bookId int, borrowDate date, returnDate date, borrowApproved bit, returnApproved bit,
 foreign key(userId) references Users(userId),foreign key(bookid) references Books(bookid));
 
-create table Review(reviewId int auto_increment primary key,userId int,bookId int,stars int,comments varchar(500),
+create table Review(reviewId int auto_increment primary key,userId int,bookId int,stars int,comments varchar(500), approved bit,
 foreign key(userId) references Users(userId),foreign key(bookid) references Books(bookid)
 );
 
