@@ -175,7 +175,6 @@ public class BookBorrowDAOImpl implements BookBorrowDAO {
 
 			while (rs.next()) {
 				bookBorrow.setBookBorrowId(rs.getInt("bookBorrowId"));
-				// bookBorrow.setReturnDate(rs.getDate("LocalDate.now()").toLocalDate());
 				listForReturnApproval.add(bookBorrow);
 			}
 		} catch (Exception e) {
@@ -196,7 +195,7 @@ public class BookBorrowDAOImpl implements BookBorrowDAO {
 		boolean status = false;
 		try {
 			con = DbConnection.getCon();
-			ps = con.prepareStatement("update bookBorrow set returnDate=? where bookBorrowId=? ");
+			ps = con.prepareStatement("update bookBorrow set returnApproved = 1 where bookBorrowId=? ");
 			ps.setDate(1, Date.valueOf(LocalDate.now()));
 			ps.setInt(2, bookBorrowId);
 			int count = ps.executeUpdate();
