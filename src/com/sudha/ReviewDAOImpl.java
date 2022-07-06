@@ -19,7 +19,6 @@ public class ReviewDAOImpl implements ReviewDAO {
 		try {
 			con = DbConnection.getCon();
 			ps = con.prepareStatement("insert into Review(userId, bookId,stars, comment,approved)values(?,?,?,?,?)");
-
 			ps.setInt(1, userId);
 			ps.setInt(2, review.getBookId());
 			ps.setInt(3, review.getStars());
