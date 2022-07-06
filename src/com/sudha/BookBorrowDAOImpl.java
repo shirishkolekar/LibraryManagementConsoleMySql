@@ -7,15 +7,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class BookBorrowDAOImpl implements BookBorrowDAO {
 	static UserDAO userDAO = new UserDAOImpl();
 	static SubscriptionDAO subscriptionDAO = new SubscriptionDAOImpl();
 	static ArrayList<BookBorrow> booksBorrow = new ArrayList<BookBorrow>();
 	static ArrayList<Subscription> subscriptions = new ArrayList<Subscription>();
+	
 	static Connection con;
-
 	static PreparedStatement ps, ps1;
 	static ResultSet rs;
 
@@ -113,15 +112,17 @@ public class BookBorrowDAOImpl implements BookBorrowDAO {
 		}
 		return booksToBeApproved;
 	}
-
+	 @Override
 	public boolean approveBookBorrow(int bookBorrowId) {
 		boolean approvalStatus = false;
 		try {
 			con = DbConnection.getCon();
-			ps = con.prepareStatement("update BookBorrow set borrowApproved=1 where bookBorrowId=?");
+			ps = con.prepareStatement("update BookBorrow set borrowApproved=true where bookBorrowId=?");
+			ps = con.prepareStatement("update BorrowedBookDetail set quantity=quantity-1 where bookBorrowId=?");
 			ps.setInt(1, bookBorrowId);
 			int count = ps.executeUpdate();
 			if (count == 1) {
+				
 				approvalStatus = true;
 			}
 		} catch (Exception e) {
@@ -194,7 +195,8 @@ public class BookBorrowDAOImpl implements BookBorrowDAO {
 		boolean status = false;
 		try {
 			con = DbConnection.getCon();
-			ps = con.prepareStatement("update BookBorrow set returnDate=? where bookBorrowId=? ");
+			ps = con.prepareStatement("update bookBorrow set returnDate=? where bookBorrowId=? ");
+			ps = con.prepareStatement("update BorrowedBookDetail set quantity=quantity+1 where bookBorrowId=? ");
 			ps.setDate(1, Date.valueOf(LocalDate.now()));
 			ps.setInt(2, bookBorrowId);
 			int count = ps.executeUpdate();

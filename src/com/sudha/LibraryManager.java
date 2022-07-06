@@ -1,6 +1,5 @@
 package com.sudha;
 
-import java.util.ArrayList;
 import java.util.Scanner;
 
 import com.sudha.Utilities.LoginStatus;
@@ -9,8 +8,6 @@ public class LibraryManager {
 	static Scanner sc = new Scanner(System.in);
 
 	public static void main(String[] args) {
-		BookDAO bookDAO = new BookDAOImpl();
-		SubscriptionDAO subscriptionDAO = new SubscriptionDAOImpl();
 		String bookName = null;
 		int selectedOption = -1;
 		boolean loginAgain = false;
@@ -112,7 +109,9 @@ public class LibraryManager {
 						case 13:// Approve Return
 							Operation.approveReturn(sc);
 							break;
-
+						case 14:// Approve Review
+							Operation.approveReview(sc);
+							break;	
 						default:
 							System.out.print("\n\n\t Invalid Option selected!");
 							break;
@@ -136,8 +135,7 @@ public class LibraryManager {
 							Operation.searchBook(sc);
 							break;
 						case 5:// Subscription
-							Operation.addSubscription(sc, loggedInUser.getUser().getUserId());// Need to understand from
-																								// sir.
+							Operation.addSubscription(sc, loggedInUser.getUser().getUserId());
 							break;
 						case 6:// Borrow book
 							Operation.borrowBookRequest(sc, loggedInUser.getUser().getUserId());
@@ -145,8 +143,8 @@ public class LibraryManager {
 						case 7:// Return Book//
 							Operation.returnBook(sc, loggedInUser.getUser().getUserId());
 							break;
-						case 8:// Review book//no method
-								// Operation.review(sc,bookName,review);// need to check
+						case 8:// Review book//
+								 Operation.review(sc, loggedInUser.getUser().getUserId());
 							break;
 						default:
 							System.out.print("\n\n\t Invalid Option selected!");

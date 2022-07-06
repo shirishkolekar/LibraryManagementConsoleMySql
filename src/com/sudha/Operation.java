@@ -1,6 +1,5 @@
 package com.sudha;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -14,6 +13,7 @@ public class Operation implements ProjectConfig {
 	public static UserDAO userDAO = new UserDAOImpl();
 	public static SubscriptionDAO subscriptionDAO = new SubscriptionDAOImpl();
 	public static BookBorrowDAO bookBorrowDAO = new BookBorrowDAOImpl();
+	public static ReviewDAO reviewDAO = new ReviewDAOImpl();
 	ArrayList<User> users = new ArrayList<User>();
 
 	static Connection con;
@@ -76,7 +76,8 @@ public class Operation implements ProjectConfig {
 	public static void addBook(Scanner sc, String bookName) {
 		System.out.println("Enter the book name you want to add : ");
 		bookName = sc.next();
-		Book book = null;
+		Book book = new Book();;
+		
 		if (bookDAO.addBook(book)) {
 			if (bookDAO.isBookAlreadyExists(bookName)) {
 				System.out.print("Enter the quantity of the book to add  :");
@@ -420,18 +421,41 @@ public class Operation implements ProjectConfig {
 		}
 	}
 
-	public static void review(Scanner sc, String bookName, int review) {
-//		System.out.print("Enter the book name you want to review : ");
-//		bookName = Utilities.getInput();
-//
-//		System.out.print("Enter your review :");
-//		review = sc.nextInt();
-//
-//		if (bookDAO.review(bookName, review)) {
-//			System.out.println("Thanks to review the book!");
-//		} else {
-//			System.out.println("Operation failed..try again!");
-//		}
+	public static void review(Scanner sc, int userId) {
+		System.out.print("Enter the book Id you want to review : ");
+		int bookId = sc.nextInt();
+
+		System.out.print("How many star you want to rate the book with (1-5) :");
+		int stars = sc.nextInt();
+
+		System.out.print("Any Comment..? :");
+		String comment = Utilities.getInput();
+
+		if (reviewDAO.review(userId, bookId, stars, comment)) {
+			System.out.println("Thanks to review the book!");
+		} else {
+			System.out.println("Operation failed..try again!");
+		}
+	}
+
+	public static void approveReview(Scanner sc) {
+
+		Review review = new Review();
+		System.out.println("List of reviewId pending for approval: ");
+
+		// to retrieve list of reviews to be approved:
+		reviewDAO.ListOfReviewsForApproval(review);
+		System.out.println(review.getReviewId() + " " + review.getStars() + " " + review.getComment());
+
+		System.out.print("Enter reviewId for approval : ");
+		int reviewId = sc.nextInt();
+
+		if (reviewDAO.approveReview(reviewId)) {
+			System.out.println("Review approved!");
+		} else {
+			System.out.println("Operation failed..try again!");
+		}
+
 	}
 
 	public static void returnBook(Scanner sc, int userId) {
@@ -461,5 +485,20 @@ public class Operation implements ProjectConfig {
 		} else {
 			System.out.print("Return Failed!");
 		}
+	}
+	
+	public static void reviewByBookId(Scanner sc)
+	{
+		System.out.println("Enter book Id to see the review of the book :");
+	    
+		Review review = new Review();
+		int bookId=sc.nextInt();
+		if(reviewDAO.reviewByBookId(bookId))
+		{
+			System.out.print(review.getReviewId()+ " "+review.getStars()+ " "+review.getComment());
+		}
+		{
+			System.out.print("No review..be the first to review the book!");
+		}   
 	}
 }

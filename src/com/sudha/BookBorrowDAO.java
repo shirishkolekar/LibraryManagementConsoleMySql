@@ -1,13 +1,12 @@
 package com.sudha;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public interface BookBorrowDAO {
 
 	boolean borrowBook(int userId, int bookId);
 
-	boolean approveBookBorrow(int bookBorrowId);
+	public boolean approveBookBorrow(int bookBorrowId);
 	
 	boolean returnBook(int bookBorrowId);
 
