@@ -1,5 +1,6 @@
 package com.sudha;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -76,8 +77,9 @@ public class Operation implements ProjectConfig {
 	public static void addBook(Scanner sc, String bookName) {
 		System.out.println("Enter the book name you want to add : ");
 		bookName = sc.next();
-		Book book = new Book();;
-		
+		Book book = new Book();
+		;
+
 		if (bookDAO.addBook(book)) {
 			if (bookDAO.isBookAlreadyExists(bookName)) {
 				System.out.print("Enter the quantity of the book to add  :");
@@ -486,19 +488,17 @@ public class Operation implements ProjectConfig {
 			System.out.print("Return Failed!");
 		}
 	}
-	
-	public static void reviewByBookId(Scanner sc)
-	{
+
+	public static void reviewByBookId(Scanner sc) {
 		System.out.println("Enter book Id to see the review of the book :");
-	    
+
 		Review review = new Review();
-		int bookId=sc.nextInt();
-		if(reviewDAO.reviewByBookId(bookId))
-		{
-			System.out.print(review.getReviewId()+ " "+review.getStars()+ " "+review.getComment());
+		int bookId = sc.nextInt();
+		if (reviewDAO.reviewByBookId(bookId)) {
+			System.out.print(review.getReviewId() + " " + review.getStars() + " " + review.getComment());
 		}
 		{
 			System.out.print("No review..be the first to review the book!");
-		}   
+		}
 	}
 }
