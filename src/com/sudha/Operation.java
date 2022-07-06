@@ -1,10 +1,6 @@
 package com.sudha;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -15,13 +11,7 @@ public class Operation implements ProjectConfig {
 	public static SubscriptionDAO subscriptionDAO = new SubscriptionDAOImpl();
 	public static BookBorrowDAO bookBorrowDAO = new BookBorrowDAOImpl();
 	public static ReviewDAO reviewDAO = new ReviewDAOImpl();
-	ArrayList<User> users = new ArrayList<User>();
-
-	static Connection con;
-
-	static PreparedStatement ps;
-	static PreparedStatement ps1;
-	static ResultSet rs;
+	public static GenreDAO genreDAO = new GenreDAOImpl();
 
 	public static LoggedInUser login() {
 		LoggedInUser loggedInUser = null;
@@ -74,11 +64,10 @@ public class Operation implements ProjectConfig {
 		}
 	}
 
-	public static void addBook(Scanner sc, String bookName) {
+	public static void addBook(Scanner sc) {
 		System.out.println("Enter the book name you want to add : ");
-		bookName = sc.next();
+		String bookName = sc.next();
 		Book book = new Book();
-		;
 
 		if (bookDAO.addBook(book)) {
 			if (bookDAO.isBookAlreadyExists(bookName)) {
@@ -95,7 +84,11 @@ public class Operation implements ProjectConfig {
 				book.setEdition(sc.nextInt());
 				System.out.print("Quantity : ");
 				book.setQuantity(sc.nextInt());
-				System.out.print("Genre : ");
+				ArrayList<Genre> genres = genreDAO.getAllGenres();
+				for (Genre g : genres) {
+					System.out.println(g.getGenreId() + " " + g.getGenreName());
+				}
+				System.out.print("Enter GenreId : ");
 				book.setGenreId(sc.nextInt());
 				bookDAO.addBook(book);
 			}
