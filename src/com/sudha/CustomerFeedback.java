@@ -74,5 +74,5 @@ public class CustomerFeedback {
 		this.feedbackDate = feedbackDate;
 		this.isApproved = isApproved;
 		this.bookid = bookid;
-	}	
+	}
 }

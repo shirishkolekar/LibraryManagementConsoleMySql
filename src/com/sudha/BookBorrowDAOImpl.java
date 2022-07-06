@@ -13,7 +13,7 @@ public class BookBorrowDAOImpl implements BookBorrowDAO {
 	static SubscriptionDAO subscriptionDAO = new SubscriptionDAOImpl();
 	static ArrayList<BookBorrow> booksBorrow = new ArrayList<BookBorrow>();
 	static ArrayList<Subscription> subscriptions = new ArrayList<Subscription>();
-	
+
 	static Connection con;
 	static PreparedStatement ps, ps1;
 	static ResultSet rs;
@@ -112,7 +112,8 @@ public class BookBorrowDAOImpl implements BookBorrowDAO {
 		}
 		return booksToBeApproved;
 	}
-	 @Override
+
+	@Override
 	public boolean approveBookBorrow(int bookBorrowId) {
 		boolean approvalStatus = false;
 		try {
@@ -122,7 +123,7 @@ public class BookBorrowDAOImpl implements BookBorrowDAO {
 			ps.setInt(1, bookBorrowId);
 			int count = ps.executeUpdate();
 			if (count == 1) {
-				
+
 				approvalStatus = true;
 			}
 		} catch (Exception e) {

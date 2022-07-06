@@ -16,8 +16,7 @@ public class Utilities {
 	}
 
 	public enum LoginStatus {
-
-		UserNotFound, PasswordIncorrect, Success; // List of named integer constant because their value is
-													// constant.(0,1,2)
+		// List of named integer constant because their value is constant.(0,1,2)
+		UserNotFound, PasswordIncorrect, Success;
 	}
 }

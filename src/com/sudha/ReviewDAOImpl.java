@@ -94,7 +94,7 @@ public class ReviewDAOImpl implements ReviewDAO {
 			rs = ps.executeQuery();
 
 			if (rs.next()) {
-				review=new Review();
+				review = new Review();
 				review.setReviewId(rs.getInt("reviewId"));
 				review.setReviewId(rs.getInt("stars"));
 				review.setComment(rs.getString("comment"));

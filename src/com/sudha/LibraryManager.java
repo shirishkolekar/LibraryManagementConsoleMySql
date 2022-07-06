@@ -111,7 +111,7 @@ public class LibraryManager {
 							break;
 						case 14:// Approve Review
 							Operation.approveReview(sc);
-							break;	
+							break;
 						default:
 							System.out.print("\n\n\t Invalid Option selected!");
 							break;
@@ -144,7 +144,7 @@ public class LibraryManager {
 							Operation.returnBook(sc, loggedInUser.getUser().getUserId());
 							break;
 						case 8:// Review book//
-								 Operation.review(sc, loggedInUser.getUser().getUserId());
+							Operation.review(sc, loggedInUser.getUser().getUserId());
 							break;
 						default:
 							System.out.print("\n\n\t Invalid Option selected!");

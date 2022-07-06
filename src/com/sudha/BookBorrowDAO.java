@@ -6,8 +6,8 @@ public interface BookBorrowDAO {
 
 	boolean borrowBook(int userId, int bookId);
 
-	public boolean approveBookBorrow(int bookBorrowId);
-	
+	boolean approveBookBorrow(int bookBorrowId);
+
 	boolean returnBook(int bookBorrowId);
 
 	boolean approveReturn(int bookBorrowId);
