@@ -7,8 +7,7 @@ import com.sudha.Utilities.LoginStatus;
 public class LibraryManager {
 	static Scanner sc = new Scanner(System.in);
 
-	public static void main(String[] args) {
-		String bookName = null;
+	public static void main(String[] args) {		
 		int selectedOption = -1;
 		boolean loginAgain = false;
 		boolean signUpStatus = false;
@@ -71,7 +70,7 @@ public class LibraryManager {
 						// librarian function calls - start
 						switch (selectedOption) {
 						case 1: // Add Book
-							Operation.addBook(sc, bookName);
+							Operation.addBook(sc);
 							break;
 						case 2:// Show all books
 							Operation.showBooks();
